@@ -7,6 +7,6 @@ if [ -z "$(which java)" ]; then
 fi
 
 # Startet das Java-Programm $@ überträgt alle Argumente, die an das Skript gegeben wurden, an das Java-Programm.
-java -jar /home/ZEUS/EnvVariablesPrinter.jar $@
+java -jar /home/YOURPATH/EnvVariablesPrinter.jar $@
 
 
