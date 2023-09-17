@@ -1,5 +1,9 @@
 import java.util.Map;
 
+/**
+ *
+ * @author Guido Zeuner
+ */
 public class EnvVariablesPrinter {
     public static void main(String[] args) {
         // Alle Umgebungsvariablen holen

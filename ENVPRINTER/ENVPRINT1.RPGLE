@@ -21,7 +21,7 @@
 **free
 ctl-opt DftActGrp(*No) ActGrp(*Caller);
 
-// Prozedur-Prototyp mit Parameterliste zum Aufruf dieses Programmes
+// Prozedur-Prototyp mit Parameterliste zum Aufruf dieses Programmes (main)
 dcl-pr entry extPgm('ENVPRINT1');
   paKey char(30) options(*nopass);
 end-pr;
