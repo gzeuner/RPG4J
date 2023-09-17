@@ -27,7 +27,7 @@ Das Programm nimmt einen String als Parameter entgegen und führt bestimmte Akti
 
 ## Lizenz
 
-Dieses Projekt steht unter der MIT-Lizenz - siehe die [LICENSE.md](LICENSE.md) Datei für weitere Details.
+Dieses Projekt steht unter der MIT-Lizenz - siehe die [LICENSE](LICENSE) Datei für weitere Details.
 
 # Visit / Besuchen Sie
 [tiny-tool.de](https://tiny-tool.de/).
@@ -60,7 +60,7 @@ The program accepts a string as a parameter and performs specific actions based 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 # Visit / Besuchen Sie
 [tiny-tool.de](https://tiny-tool.de/).
