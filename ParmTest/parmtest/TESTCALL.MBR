@@ -1,172 +1,73 @@
-// *****************************************************************************
-// * Program : TESTCALL
-// * Description : Start Java Processes with Parameters
-// * Created on : 13.08.2017 by Guido Zeuner
-// *****************************************************************************
-ctl-opt DftActGrp(*No) ActGrp(*Caller);
+// *******************************************************************************
+// Program        : TESTCALL1
+// Description    : Starten von Java Prozessen mit Parametern
+// Created on     : 13.08.2017 von Guido Zeuner
+// Beispiel-Aufruf: CALL PGM(TESTCALL) PARM('user.country')
+// *******************************************************************************
+*free
 
-// Prototype for main
-dcl-pr entry ExtPgm('TESTCALL');
+ctl-opt dftactgrp(*no) actgrp(*caller);
+
+// Prototype-/Interface
+dcl-pr entry extpgm('TESTCALL');
   pKey char(20) const options(*varsize);
 end-pr;
 
-dcl-pi entry;
-  pKey char(20) const options(*varsize);
-end-pi;
-
-// Prototype for qcmdexec
-dcl-pr ExecCmd ExtPgm('QCMDEXC');
+// Prototype for Calls to QCMDEXC
+dcl-pr ExecCmd extpgm('QCMDEXC');
   Cmd char(2048) const;
   CmdLen packed(15:5) const;
 end-pr;
 
-// Variables
-dcl-s parmLength int(10);
-dcl-s key varchar(50);
-dcl-s CLASSPATH varchar(2048);
-dcl-s shellCommand varchar(1024);
+// Weitere Variablen
 dcl-s CmdLength packed(15:5);
-dcl-s parmTestObj pointer;
-dcl-s keyObj pointer;
-dcl-s resArrayObj pointer dim(500) class(*JAVA:'java.lang.String');
-dcl-s arrayLength int(10);
-dcl-s arrayElement int(10);
-dcl-s resObj pointer;
-dcl-s result varchar(1024);
+dcl-s shellCommand varchar(1024);
+dcl-s parmLength int(10);
 dcl-s resultContent varchar(52);
+dcl-s CLASSPATH varchar(2048);
 
-dcl-proc Main;
-  setCLASSPATH();
 
-  parmLength = %len(%trim(pKey));
-  key = %subst(pKey:1:parmLength);
-  keyObj = ctl-opt DftActGrp(*No) ActGrp(*Caller);
-
-// Prototype for this program
-dcl-pr entry ExtPgm('TESTCALL1');
-  pKey char(20) const options(*varsize);
-end-pr;
-
-// --- Prototype for QCMDEXC ---
-dcl-pr ExecCmd ExtPgm('QCMDEXC');
-  Cmd char(2048) const;
-  CmdLen packed(15:5) const;
-end-pr;
-
-// --- Prototypes for Java methods ---
-dcl-pr getBytes char(65535) varying;
-  *n ExtProc(*JAVA: 'java.lang.String': 'getBytes');
-end-pr;
-
-dcl-pr getArrayLength int(10);
-  arrObj pointer dim(500) class(*JAVA:'java.lang.Object');
-  *n ExtProc(*JAVA: 'parmtest.ParmTest': 'getArrayLength');
-end-pr;
-
-dcl-pr makeString pointer;
-  bytes char(1024) const varying;
-  *n ExtProc(*JAVA: 'java.lang.String': '*CONSTRUCTOR');
-end-pr;
-
-dcl-pr makeInteger pointer;
-  integer int(10) value;
-  *n ExtProc(*JAVA: 'java.lang.Integer': '*CONSTRUCTOR');
-end-pr;
-
-dcl-pr createParmTest pointer;
-  *n ExtProc(*JAVA: 'parmtest.ParmTest': '*CONSTRUCTOR');
-end-pr;
-
-dcl-pr getProperty pointer;
-  keyObj pointer class(*JAVA:'java.lang.String');
-  *n ExtProc(*JAVA: 'parmtest.ParmTest': 'getProperty');
-end-pr;
-
-dcl-pr getProperties pointer;
-  *n ExtProc(*JAVA: 'parmtest.ParmTest': 'getProperties');
-end-pr;
-
-// Main Procedure
-dcl-proc Main;
-  setCLASSPATH();
-
-  parmLength = %len(%trim(pKey));
-  key = %subst(pKey:1:parmLength);
-  keyObj = makeString(key);
-  parmTestObj = createParmTest();
-
-  if key = 'list';
-    resArrayObj = getProperties(parmTestObj);
-    arrayLength = getArrayLength(parmTestObj:resArrayObj);
-    for arrayElement = 1 to arrayLength;
-      resObj = resArrayObj(arrayElement);
-      if resObj <> *NULL;
-        result = getBytes(resObj);
-        resultContent = result;
-        dsply resultContent;
-      endif;
-    endfor;
-    wait();
-  else;
-    resObj = getProperty(parmTestObj:keyObj);
-    result = getBytes(resObj);
-    resultContent = result;
-    dsply resultContent;
-    wait();
-  endif;
-
-  *Inlr = *On;
-end-proc;
-
+// Prozedur für setCLASSPATH
 dcl-proc setCLASSPATH;
-  CLASSPATH = '/home/GZEUNER/ParmTest.jar';
-  shellCommand = 'ADDENVVAR ENVVAR(CLASSPATH) VALUE(''' + CLASSPATH +
-                 ''') REPLACE(*YES)';
+  CLASSPATH = '/home/YOURLIB/ParmTest.jar';
+  shellCommand = 'ADDENVVAR ENVVAR(CLASSPATH) VALUE(''' + CLASSPATH + ''') REPLACE(*YES)';
   CmdLength = %len(%trim(shellCommand));
-  ExecCmd(shellCommand:CmdLength);
+  ExecCmd(shellCommand: CmdLength);
 end-proc;
 
+// Prozedur für wait
 dcl-proc wait;
   shellCommand = 'QSYS/DLYJOB DLY(2)';
   CmdLength = %len(%trim(shellCommand));
-  ExecCmd(shellCommand:CmdLength);
-end-proc;
-(key);
-  parmTestObj = createParmTest();
-
-  if key = 'list';
-    resArrayObj = getProperties(parmTestObj);
-    arrayLength = getArrayLength(parmTestObj:resArrayObj);
-    for arrayElement = 1 to arrayLength;
-      resObj = resArrayObj(arrayElement);
-      if resObj <> *NULL;
-        result = getBytes(resObj);
-        resultContent = result;
-        dsply resultContent;
-      endif;
-    endfor;
-    wait();
-  else;
-    resObj = getProperty(parmTestObj:keyObj);
-    result = getBytes(resObj);
-    resultContent = result;
-    dsply resultContent;
-    wait();
-  endif;
-
-  *Inlr = *On;
+  ExecCmd(shellCommand: CmdLength);
 end-proc;
 
-dcl-proc setCLASSPATH;
-  CLASSPATH = '/home/GZEUNER/ParmTest.jar';
-  shellCommand = 'ADDENVVAR ENVVAR(CLASSPATH) VALUE(''' + CLASSPATH +
-                 ''') REPLACE(*YES)';
-  CmdLength = %len(%trim(shellCommand));
-  ExecCmd(shellCommand:CmdLength);
-end-proc;
+// Hauptprogramm
+exsr setCLASSPATH;
 
-dcl-proc wait;
-  shellCommand = 'QSYS/DLYJOB DLY(2)';
-  CmdLength = %len(%trim(shellCommand));
-  ExecCmd(shellCommand:CmdLength);
-end-proc;
+parmLength = %len(%trim(pKey));
+key = %subst(pKey: 1: parmLength);
+keyObj = makeString(key);
+parmTestObj = createParmTest();
+
+if (key = 'list');
+  resArrayObj = getProperties(parmTestObj);
+  arrayLength = getArrayLength(parmTestObj: resArrayObj);
+  for arrayElement = 1 to arrayLength;
+    resObj = resArrayObj(arrayElement);
+    if (resObj <> *null);
+      result = getBytes(resObj);
+      resultContent = result;
+      dsply resultContent;
+    endif;
+  endfor;
+  exsr wait;
+else;
+  resObj = getProperty(parmTestObj: keyObj);
+  result = getBytes(resObj);
+  resultContent = result;
+  dsply resultContent;
+  exsr wait;
+endif;
+
+*inlr = *on;

@@ -140,7 +140,7 @@
         //Set Classpath ENV-VAR via QCMDEXC
        begsr setCLASSPATH;
 
-         CLASSPATH = '/home/GZEUNER/ParmTest.jar';
+         CLASSPATH = '/home/YOURLIB/ParmTest.jar';
 
          shellCommand = 'ADDENVVAR ENVVAR(CLASSPATH) VALUE(''' +
                          CLASSPATH + ''') REPLACE(*YES)';
