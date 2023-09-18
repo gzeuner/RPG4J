@@ -1,3 +1,4 @@
+**free
 // MIT License
 // Copyright (c) 2023 Guido Zeuner
 //
@@ -18,7 +19,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-**free
+
 ctl-opt DftActGrp(*No) ActGrp(*Caller);
 
 // Prozedur-Prototyp mit Parameterliste zum Aufruf dieses Programmes (main)
