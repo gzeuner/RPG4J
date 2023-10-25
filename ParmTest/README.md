@@ -1,5 +1,3 @@
-Klar, kein Problem! Hier sind Beispiele für eine `README.md` Datei auf Deutsch und auf Englisch:
-
 ### README (Deutsch)
 
 ---

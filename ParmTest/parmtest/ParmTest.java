@@ -6,7 +6,7 @@ import java.util.Properties;
 
 /**
  *
- * @author Guido Zeuner
+ * @author Guido Zeuner / MIT License
  */
 public class ParmTest {
 
