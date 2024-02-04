@@ -4,6 +4,6 @@ RPG4J: An evolving collection of examples demonstrating how to seamlessly integr
 
 RPG4J: Eine sich entwickelnde Sammlung von Beispielen, die zeigen, wie man Java nahtlos in RPG-Anwendungen auf AS/400 und IBM i integrieren kann. Entwickelt als Lernressource für Entwickler und als Begleiter zum Blog tiny-tool.de.
 
-[MIT](LICENSE)
+[Apache 2.0](LICENSE)
 # Visit / Besuchen Sie
 [tiny-tool.de](https://tiny-tool.de/).
