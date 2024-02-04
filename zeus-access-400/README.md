@@ -5,7 +5,7 @@ zeus-access-400: A continuously evolving collection of examples showcasing how t
 
 zeus-access-400: Eine stetig wachsende Sammlung von Beispielen, die demonstrieren, wie man Java nahtlos in RPG-Anwendungen auf AS/400 und IBM i integriert. Entwickelt als Bildungsmaterial für Entwickler und als Begleiter zum Blog tiny-tool.de.
 
-[MIT](LICENSE)
+[APACHE 2.0](LICENSE)
 
 # Visit / Besuchen Sie
 [tiny-tool.de](https://tiny-tool.de/).
