@@ -63,10 +63,10 @@ public class DatabaseController {
             PreparedStatement stmt = dbManager.getPreparedStmt(connection, query);
             ResultSet rs = stmt.executeQuery();
 
-            // Erzeugt XML-Dokument aus ResultSet
+            // Creates XML document from ResultSet
             Document doc = createXMLFromResultSet(rs, "export");
 
-            // Speichert das XML-Dokument in einer Datei
+            // Saves the XML document in a file
             saveXMLToFile(doc, "export");
 
         } catch (Exception e) {
