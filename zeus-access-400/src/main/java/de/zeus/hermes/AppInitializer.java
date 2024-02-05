@@ -2,7 +2,7 @@ package de.zeus.hermes;
 
 import de.zeus.hermes.service.DatabaseService;
 import de.zeus.hermes.util.Config;
-import de.zeus.hermes.util.FileAccessManager;
+import de.zeus.hermes.util.PropertiesLoader;
 
 import java.util.Properties;
 import java.util.logging.Level;
@@ -23,7 +23,7 @@ public class AppInitializer {
     private void init(String[] args) {
 
         String configFilePath = args[0];
-        Properties properties = FileAccessManager.loadProperties(configFilePath);
+        Properties properties = PropertiesLoader.loadProperties(configFilePath);
         if (properties == null) {
             LOGGER.log(Level.SEVERE, "Configuration file could not be loaded.");
             return;
@@ -40,8 +40,8 @@ public class AppInitializer {
         // Example: Access to the configuration values
         LOGGER.log(Level.INFO, "Database-URL: {0}", config.getDatabaseUrl());
 
-        // Initialize DatabaseService and perform a sample database operation
+        // Initialize DatabaseService and perform the SQL to XML process
         DatabaseService dbService = new DatabaseService();
-        dbService.performSampleDatabaseOperation();
+        dbService.sqlToXml();
     }
 }

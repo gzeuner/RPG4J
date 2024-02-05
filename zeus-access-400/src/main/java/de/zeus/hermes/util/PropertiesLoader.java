@@ -7,9 +7,9 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class FileAccessManager {
+public class PropertiesLoader {
 
-    private static final Logger LOGGER = Logger.getLogger(FileAccessManager.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(PropertiesLoader.class.getName());
 
     public static Properties loadProperties(String fileName) {
         Properties prop = new Properties();
@@ -22,7 +22,7 @@ public class FileAccessManager {
             LOGGER.log(Level.WARNING, "Properties file " + fileName + " not found in the file system. Searching in the JAR...", ex);
 
             // If the file is not in the file system, search in the JAR
-            try (InputStream input = FileAccessManager.class.getClassLoader().getResourceAsStream(fileName)) {
+            try (InputStream input = PropertiesLoader.class.getClassLoader().getResourceAsStream(fileName)) {
                 if (input != null) {
                     prop.load(input);
                     LOGGER.log(Level.INFO, "Properties-File {0} successfully loaded from the JAR.", fileName);
