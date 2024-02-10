@@ -1,6 +1,23 @@
 package de.zeus.hermes.util;
 
+/**
+ * The Config class serves as a centralized repository for managing application configuration settings. It is designed
+ * as a singleton to ensure a single, globally accessible instance that holds configuration parameters such as database
+ * connection details (driver, URL, username, password) and query specifications. This approach facilitates easy access
+ * and modification of critical settings throughout the application, promoting consistency and reducing the likelihood
+ * of configuration errors.
+ *
+ * This class provides methods to set and retrieve configuration parameters, enabling dynamic adjustments to the application's
+ * behavior based on the provided settings. It is typically populated at application startup from external sources like
+ * configuration files, environment variables, or command-line arguments, ensuring flexibility and adaptability to different
+ * runtime environments.
+ *
+ * By abstracting configuration management into a dedicated class, the Config class simplifies the process of managing
+ * application settings, making it easier to maintain and update configurations as the application evolves or as it is
+ * deployed across different environments.
+ */
 public class Config {
+
     private static Config instance;
 
     // Config variables
