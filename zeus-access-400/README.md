@@ -24,7 +24,7 @@ To run the examples, the following files need to be present in the same director
 ```cmd
 java -cp "zeus-access-400-1.0-SNAPSHOT.jar;jt400.jar" de.zeus.hermes.AppInitializer application.properties
 ```
-### Auf einem Windows-System / On a Windows System
+### Linux/Unix-System/System-i 
 
 ```cmd
 java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitializer application.properties
