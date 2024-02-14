@@ -1,6 +1,6 @@
 ## zeus-access-400
 
-Müheloser Z ugriff auf IBM DB2/400-Datenbanken aus Java heraus mit jt400. Erkunden Sie die Welt der Datenbankintegration in Ihren Legacy-RPG-Projekten.
+Müheloser Zugriff auf IBM DB2/400-Datenbanken aus Java heraus mit jt400. Erkunden Sie die Welt der Datenbankintegration in Ihren Legacy-RPG-Projekten.
 
 **zeus-access-400** ist eine kontinuierlich wachsende Sammlung von Beispielen, die aufzeigen, wie Java nahtlos mit RPG-Anwendungen auf AS/400 und IBM i verbunden werden kann. Entwickelt als Bildungsressource für Entwickler und als Begleitung zum Blog [tiny-tool.de](https://tiny-tool.de/).
 
