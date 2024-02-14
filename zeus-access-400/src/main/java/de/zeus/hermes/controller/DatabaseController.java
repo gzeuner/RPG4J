@@ -15,14 +15,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Controls the database interactions and manages the export process of query results to various file formats.
- * This class handles the lifecycle of database connections using configurations provided by the {@link Config} class
- * and employs the {@link DatabaseManager} for connection management. It ensures a single, reusable connection is maintained
- * throughout the application's lifecycle.
- *
- * The class also facilitates the conversion of SQL query results into different formats (XML, JSON, CSV, HTML, and Markdown)
- * by leveraging XSLT transformations. It prioritizes finding XSLT files in the local filesystem before falling back to
- * resources within the application's JAR file, providing flexibility in resource management.
+ * Manages database interactions and the export process, converting query results into various file formats.
+ * Utilizes configurations from the Config class for database connections, managed by DatabaseManager, ensuring a single,
+ * reusable connection. Supports converting SQL query results into multiple formats (XML, JSON, CSV, HTML, and Markdown)
+ * using XSLT transformations, with an emphasis on local filesystem resource management.
  */
 public class DatabaseController {
 
@@ -32,34 +28,31 @@ public class DatabaseController {
     private Connection connection = null;
 
     /**
-     * Establishes a database connection using the configuration parameters specified in the {@link Config} class.
-     * Ensures that only one connection is active at any time.
+     * Connects to the database using parameters from Config. Maintains a single active connection.
      */
     public void connectToDatabase() {
         if (connection == null) {
-            connection = dbManager.getDatabaseConnection(config.getDriver(),
-                    config.getDatabaseUrl(), config.getUsername(), config.getPassword());
+            connection = dbManager.getDatabaseConnection(config.getDriver(), config.getDatabaseUrl(), config.getUsername(), config.getPassword());
             if (connection != null) {
-                LOGGER.log(Level.INFO, "Successfully connected to the database.");
+                LOGGER.log(Level.INFO, "Database connection established successfully.");
             }
         }
     }
 
     /**
-     * Closes the database connection if it is currently established, ensuring resources are cleanly released.
+     * Disconnects the current database connection, releasing resources.
      */
     public void disconnectFromDatabase() {
         if (connection != null) {
             dbManager.closeDatabaseConnection(connection);
-            LOGGER.log(Level.INFO, "Database connection has been disconnected.");
+            LOGGER.log(Level.INFO, "Database connection closed.");
             connection = null;
         }
     }
 
     /**
-     * Executes a SQL query to fetch data, exports the result to XML, and then transforms and exports the XML
-     * to various formats including JSON, JSON Lines, CSV, HTML, and Markdown. This process demonstrates the
-     * application's ability to handle data transformation and exportation flexibly.
+     * Executes the configured SQL query, exports results to XML, and transforms them into specified formats.
+     * Demonstrates flexible data handling and export capabilities.
      */
     public void runSqlToExportProcess() {
         try {
@@ -69,28 +62,26 @@ public class DatabaseController {
             ResultSet rs = stmt.executeQuery();
             Set<String> exportFormats = config.getExportFormats();
             String baseFileName = generateBaseFileName("export");
-            // Export base xml format
+            // Export to XML initially
             XmlExporter.exportResultSetToXML(rs, "export", baseFileName + ".xml");
-            // Process configured export formats
+            // Process each configured format
             exportFormats.forEach(format -> {
-                // Ignore upper/lower case during format check
                 if (!"xml".equalsIgnoreCase(format)) {
                     transformAndExport(baseFileName, "xml", format.toLowerCase());
                 }
             });
         } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error when executing the database operation", e);
+            LOGGER.log(Level.SEVERE, "An error occurred during the database operation.", e);
         } finally {
             disconnectFromDatabase();
         }
     }
 
     /**
-     * Generates a base filename using the current timestamp and a specified root node name. This filename
-     * serves as the foundation for all exported files.
+     * Creates a base filename using the current timestamp and a specified identifier.
      *
-     * @param rootNode The root node name to be included in the filename.
-     * @return A string representing the base filename.
+     * @param rootNode Name for inclusion in the filename, enhancing traceability.
+     * @return The generated base filename.
      */
     private String generateBaseFileName(String rootNode) {
         String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
@@ -98,39 +89,35 @@ public class DatabaseController {
     }
 
     /**
-     * Transforms XML content to a specified format using an XSLT file and exports the result. The method
-     * first attempts to locate the XSLT file in the filesystem. If not found, it tries to load it from
-     * the application's JAR resources.
+     * Transforms XML to a designated format using an XSLT file, focusing on filesystem searches.
      *
-     * @param baseFileName The base filename for the input and output files.
-     * @param inputFormat The format of the input file (expected to be 'xml').
-     * @param outputFormat The desired format of the output file.
+     * @param baseFileName Base name for both input and output files.
+     * @param inputFormat Expected input format ('xml').
+     * @param outputFormat Target format for the output.
      */
     private void transformAndExport(String baseFileName, String inputFormat, String outputFormat) {
         String inputFile = baseFileName + "." + inputFormat;
         String outputFile = baseFileName + "." + outputFormat;
         String xsltPath = findXsltPath("xml_to_" + outputFormat + ".xslt");
-        XMLtransformer.transformXML(inputFile, xsltPath, outputFile);
+        if (xsltPath != null) {
+            XMLtransformer.transformXML(inputFile, xsltPath, outputFile);
+        } else {
+            LOGGER.log(Level.WARNING, "XSLT path for format conversion not found: {0}", outputFormat);
+        }
     }
 
     /**
-     * Attempts to find the path of an XSLT file, first in the filesystem and then within the JAR file.
-     * This allows for flexible XSLT file management and supports development and deployment scenarios.
+     * Attempts to find an XSLT file in the filesystem, prioritizing the application's current directory.
      *
-     * @param xsltFileName The name of the XSLT file to locate.
-     * @return The path to the XSLT file if found, or {@code null} if the file cannot be located.
+     * @param xsltFileName Name of the XSLT file to locate.
+     * @return The file path if found, otherwise null.
      */
     private String findXsltPath(String xsltFileName) {
-        try {
-            String fileSystemPath = Paths.get("src/main/resources", xsltFileName).toString();
-            File file = new File(fileSystemPath);
-            if (file.exists()) {
-                return fileSystemPath;
-            } else {
-                return getClass().getClassLoader().getResource(xsltFileName).toURI().getPath();
-            }
-        } catch (Exception e) {
-            LOGGER.log(Level.WARNING, "Could not find XSLT file in filesystem or JAR", e);
+        File file = new File(xsltFileName);
+        if (file.exists()) {
+            return file.getAbsolutePath();
+        } else {
+            LOGGER.log(Level.WARNING, "XSLT file not found in the current directory: {0}", xsltFileName);
             return null;
         }
     }
