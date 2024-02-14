@@ -39,7 +39,8 @@ java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitiali
 - `JSON`: Ein leichtgewichtiges Daten-Austauschformat, das sich gut für Webanwendungen und APIs eignet.
 - `JSONL`: Eine Variante von JSON, die sich besonders für den Export großer Datensätze eignet, wobei jedes Objekt in einer neuen Zeile steht.
 - `CSV`: Ein klassisches Format für den Export tabellarischer Daten, das sich leicht in Tabellenkalkulationsprogramme wie Microsoft Excel oder Google Sheets importieren lässt.
-
+- `MD`: Ideal für die Erstellung dokumentierter Berichte oder Anleitungen, die direkt auf GitHub, GitLab oder anderen Versionierungssystemen verwendet werden können.
+- 
 **zeus-access-400** supports a variety of data formats for exporting your database queries. This flexibility allows developers to export data in the format that best suits their needs. Currently supported formats include:
 
 - `XML`: Ideal for data-intensive applications where document structure is important.
@@ -47,6 +48,7 @@ java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitiali
 - `JSON`: A lightweight data interchange format well-suited for web applications and APIs.
 - `JSONL`: A variant of JSON, particularly useful for exporting large datasets where each object is on a new line.
 - `CSV`: A classic format for exporting tabular data, easily importable into spreadsheet programs like Microsoft Excel or Google Sheets.
+- `MD`: Ideal for creating documented reports or instructions that can be directly used on GitHub, GitLab, or other versioning systems.
 
 
 [APACHE 2.0](LICENSE)
