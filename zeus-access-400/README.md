@@ -40,7 +40,7 @@ java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitiali
 - `JSONL`: Eine Variante von JSON, die sich besonders für den Export großer Datensätze eignet, wobei jedes Objekt in einer neuen Zeile steht.
 - `CSV`: Ein klassisches Format für den Export tabellarischer Daten, das sich leicht in Tabellenkalkulationsprogramme wie Microsoft Excel oder Google Sheets importieren lässt.
 - `MD`: Ideal für die Erstellung dokumentierter Berichte oder Anleitungen, die direkt auf GitHub, GitLab oder anderen Versionierungssystemen verwendet werden können.
-- 
+
 **zeus-access-400** supports a variety of data formats for exporting your database queries. This flexibility allows developers to export data in the format that best suits their needs. Currently supported formats include:
 
 - `XML`: Ideal for data-intensive applications where document structure is important.
