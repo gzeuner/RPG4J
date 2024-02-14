@@ -15,23 +15,30 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 /**
- * The XmlExporter class is designed to facilitate the conversion of SQL query results from a ResultSet into an XML format.
- * This utility class provides a static method to export data efficiently, encapsulating the process of XML document creation,
- * element mapping, and file writing. It abstracts the complexity involved in transforming database query results into a structured
- * XML document, allowing for easy integration and usage within database interaction layers or services.
+ * Provides functionality to export SQL query results from a ResultSet into XML format.
+ * This utility class encapsulates the XML document creation, mapping ResultSet data to XML elements,
+ * and writing the XML to a file. It simplifies the transformation of database query results into a structured XML document,
+ * facilitating easy integration and utilization within database interaction workflows or services.
  *
- * Utilizing the DOM (Document Object Model) approach for XML creation, it ensures that the generated XML is well-formed and
- * adheres to standards. The class also sets up the necessary XML transformation properties to produce a neatly indented
- * and encoded output, enhancing the readability and usability of the generated XML files.
+ * The class employs the DOM (Document Object Model) methodology for XML creation, ensuring the produced XML is well-formed
+ * and adheres to XML standards. It configures XML transformation properties to generate an output that is properly indented
+ * and encoded, improving the readability and manageability of the resulting XML files.
  *
- * Usage of this class simplifies the process of XML file generation from database results, making it a valuable tool for
- * applications requiring data exportation in XML format for reporting, data exchange, or integration purposes.
+ * This class is instrumental for applications that need to export data in XML format for purposes such as reporting,
+ * data exchange, or system integration.
  */
 public class XmlExporter {
 
-
     private static final Logger LOGGER = Logger.getLogger(XmlExporter.class.getName());
 
+    /**
+     * Exports the given ResultSet to an XML file with the specified root node and file name.
+     * It creates an XML document from the ResultSet, then saves this document to a file.
+     *
+     * @param rs The ResultSet containing the data to be exported.
+     * @param rootNode The name of the root element in the generated XML document.
+     * @param fileName The name (including path) of the XML file to be created.
+     */
     public static void exportResultSetToXML(ResultSet rs, String rootNode, String fileName) {
         try {
             Document doc = createXMLFromResultSet(rs, rootNode);
@@ -42,6 +49,15 @@ public class XmlExporter {
         }
     }
 
+    /**
+     * Creates an XML document from a ResultSet. Each row in the ResultSet is transformed into an "data" element
+     * with nested "property" elements representing each column.
+     *
+     * @param rs The ResultSet to transform into XML.
+     * @param rootNode The root element name for the XML document.
+     * @return A Document object representing the XML structure of the ResultSet.
+     * @throws Exception If any error occurs during the XML document creation process.
+     */
     private static Document createXMLFromResultSet(ResultSet rs, String rootNode) throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -58,6 +74,7 @@ public class XmlExporter {
             for (int i = 1; i <= rsmd.getColumnCount(); i++) {
                 Element property = doc.createElement("property");
                 property.setAttribute("path", rsmd.getColumnName(i));
+                property.setAttribute("type", getJdbcTypeName(rsmd.getColumnType(i)));
                 Element value = doc.createElement("value");
                 value.appendChild(doc.createTextNode(rs.getString(i)));
                 property.appendChild(value);
@@ -67,6 +84,32 @@ public class XmlExporter {
         return doc;
     }
 
+    /**
+     * Retrieves the JDBC type name for a given JDBC type code.
+     *
+     * @param jdbcType The JDBC type code.
+     * @return The name of the JDBC type.
+     */
+    private static String getJdbcTypeName(int jdbcType) {
+        try {
+            for (java.lang.reflect.Field field : java.sql.Types.class.getFields()) {
+                if (field.getInt(null) == jdbcType) {
+                    return field.getName();
+                }
+            }
+        } catch (IllegalAccessException e) {
+            LOGGER.log(Level.SEVERE, "Error when accessing JDBC type names", e);
+        }
+        return "UNKNOWN";
+    }
+
+    /**
+     * Saves the given XML Document to a file.
+     *
+     * @param doc The XML Document to save.
+     * @param fileName The file name (including path) where the XML Document should be saved.
+     * @throws Exception If any error occurs during the process of saving the XML to a file.
+     */
     private static void saveXMLToFile(Document doc, String fileName) throws Exception {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -75,7 +118,6 @@ public class XmlExporter {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
         DOMSource source = new DOMSource(doc);
-
         StreamResult result = new StreamResult(new java.io.File(fileName));
         transformer.transform(source, result);
     }

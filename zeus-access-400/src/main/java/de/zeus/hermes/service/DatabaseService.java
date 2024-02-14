@@ -29,8 +29,8 @@ public class DatabaseService {
      * necessary steps to accomplish this task, offering a simplified and direct way to generate XML files from database
      * query results.
      */
-    public void sqlToXml() {
+    public void perform() {
         LOGGER.log(Level.INFO, "Initiating SQL to XML export process.");
-        databaseController.runSqlToXmlProcess();
+        databaseController.runSqlToExportProcess();
     }
 }

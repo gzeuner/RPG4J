@@ -1,5 +1,8 @@
 package de.zeus.hermes.util;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * The Config class serves as a centralized repository for managing application configuration settings. It is designed
  * as a singleton to ensure a single, globally accessible instance that holds configuration parameters such as database
@@ -26,6 +29,7 @@ public class Config {
     private String username;
     private String password;
     private String query;
+    private Set<String> exportFormats = new HashSet<>();
 
     // Private constructor to prevent instantiation outside
     private Config() {
@@ -80,5 +84,19 @@ public class Config {
 
     public void setQuery(String query) {
         this.query = query;
+    }
+
+    public Set<String> getExportFormats() {
+        return exportFormats;
+    }
+
+    // Method to add formats from a comma-separated string (for easy loading from properties file)
+    public void loadExportFormatsFromString(String formats) {
+        if (formats != null && !formats.isEmpty()) {
+            String[] formatArray = formats.split(",");
+            for (String format : formatArray) {
+                this.exportFormats.add(format.trim());
+            }
+        }
     }
 }

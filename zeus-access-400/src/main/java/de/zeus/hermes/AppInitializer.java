@@ -54,6 +54,7 @@ public class AppInitializer {
         config.setUsername(properties.getProperty("username"));
         config.setPassword(properties.getProperty("password"));
         config.setQuery(properties.getProperty("query"));
+        config.loadExportFormatsFromString(properties.getProperty("exportFormats"));
 
         // Log access to the configuration values as an example of successful configuration loading
         LOGGER.log(Level.INFO, "Database-URL: {0}", config.getDatabaseUrl());
@@ -61,6 +62,6 @@ public class AppInitializer {
         // Initialize DatabaseService and perform the SQL to XML process
         DatabaseService dbService = new DatabaseService();
         LOGGER.log(Level.INFO, "Starting the SQL to XML export process.");
-        dbService.sqlToXml();
+        dbService.perform();
     }
 }
