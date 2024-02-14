@@ -52,7 +52,7 @@ public class XMLtransformer {
     }
 
     /**
-     * Loads the XSLT source, first attempting to find the file in the file system, then in the jar.
+     * Loads the XSLT source, first attempting to find the file in the file system.
      *
      * @param xsltFileName The name (path) of the XSLT file.
      * @return The Source object representing the XSLT file.
