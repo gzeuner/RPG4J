@@ -6,7 +6,6 @@ import de.zeus.hermes.util.XMLtransformer;
 import de.zeus.hermes.util.XmlExporter;
 
 import java.io.File;
-import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -96,9 +95,9 @@ public class DatabaseController {
      * @param outputFormat Target format for the output.
      */
     private void transformAndExport(String baseFileName, String inputFormat, String outputFormat) {
-        String inputFile = baseFileName + "." + inputFormat;
-        String outputFile = baseFileName + "." + outputFormat;
-        String xsltPath = findXsltPath("xml_to_" + outputFormat + ".xslt");
+        String inputFile = config.getExportPath() + "/" + baseFileName + "." + inputFormat;
+        String outputFile = config.getExportPath() + "/" + baseFileName + "." + outputFormat;
+        String xsltPath = findXsltPath(config.getXsltPath() + "/xml_to_" + outputFormat + ".xslt");
         if (xsltPath != null) {
             XMLtransformer.transformXML(inputFile, xsltPath, outputFile);
         } else {
@@ -117,7 +116,7 @@ public class DatabaseController {
         if (file.exists()) {
             return file.getAbsolutePath();
         } else {
-            LOGGER.log(Level.WARNING, "XSLT file not found in the current directory: {0}", xsltFileName);
+            LOGGER.log(Level.WARNING, "XSLT file not found : {0}", xsltFileName);
             return null;
         }
     }

@@ -118,7 +118,8 @@ public class XmlExporter {
         transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
 
         DOMSource source = new DOMSource(doc);
-        StreamResult result = new StreamResult(new java.io.File(fileName));
+        StreamResult result = new StreamResult(
+                new java.io.File(Config.getInstance().getExportPath() + "/" + fileName));
         transformer.transform(source, result);
     }
 }

@@ -55,6 +55,8 @@ public class AppInitializer {
         config.setPassword(properties.getProperty("password"));
         config.setQuery(properties.getProperty("query"));
         config.loadExportFormatsFromString(properties.getProperty("exportFormats"));
+        config.setXsltPath(properties.getProperty("xsltpath"));
+        config.setExportPath(properties.getProperty("exportpath"));
 
         // Log access to the configuration values as an example of successful configuration loading
         LOGGER.log(Level.INFO, "Database-URL: {0}", config.getDatabaseUrl());

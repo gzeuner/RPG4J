@@ -63,7 +63,7 @@ public class XMLtransformer {
             LOGGER.log(Level.SEVERE, "XSLT file not found in the current directory: {0}", xsltFileName);
             throw new RuntimeException("XSLT file not found in the current directory: " + xsltFileName);
         }
-        LOGGER.log(Level.INFO, "Loading XSLT file from the current directory: {0}", xsltFileName);
+        LOGGER.log(Level.INFO, "Loading XSLT file from: {0}", xsltFileName);
         return new StreamSource(xsltFile);
     }
 

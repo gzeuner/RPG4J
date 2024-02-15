@@ -29,7 +29,9 @@ public class Config {
     private String username;
     private String password;
     private String query;
-    private Set<String> exportFormats = new HashSet<>();
+    private String xsltPath;
+    private String exportPath;
+    private final Set<String> exportFormats = new HashSet<>();
 
     // Private constructor to prevent instantiation outside
     private Config() {
@@ -88,6 +90,22 @@ public class Config {
 
     public Set<String> getExportFormats() {
         return exportFormats;
+    }
+
+    public String getXsltPath() {
+        return xsltPath;
+    }
+
+    public void setXsltPath(String xsltPath) {
+        this.xsltPath = xsltPath;
+    }
+
+    public String getExportPath() {
+        return exportPath;
+    }
+
+    public void setExportPath(String exportPath) {
+        this.exportPath = exportPath;
     }
 
     // Method to add formats from a comma-separated string (for easy loading from properties file)
