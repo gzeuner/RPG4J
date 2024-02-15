@@ -8,23 +8,30 @@ Effortlessly access IBM DB2/400 databases from Java using jt400. Explore the wor
 
 **zeus-access-400** is a continuously evolving collection of examples showcasing how to seamlessly connect Java with RPG applications on AS/400 and IBM i. Designed as an educational resource for developers and a companion to the [tiny-tool.de](https://tiny-tool.de/) blog.
 
-## Voraussetzungen / Prerequisites
+### Voraussetzungen / Prerequisites
 
-Um die Beispiele ausführen zu können, müssen folgende Dateien im selben Verzeichnis wie das ausführbare JAR vorhanden sein:
-To run the examples, the following files need to be present in the same directory as the executable JAR:
+### Deutsch
+- **Neu:** Laden Sie die `zeus-access-400.zip` herunter und entpacken Sie sie.
+- Fügen Sie `jt400.jar` zum Ordner `zeus-access-400` hinzu.
+- Passen Sie `application.properties` nach Ihren Bedürfnissen an.
 
-- `zeus-access-400-1.0-SNAPSHOT.jar`
-- `jt400.jar`
-- `application.properties`
+### English 
+- New:** Download the `zeus-access-400.zip` and unzip it.
+- Add `jt400.jar` to the `zeus-access-400` folder.
+- Customize `application.properties` according to your needs.
 
-## Ausführung / Execution
+### Ausführung / Execution
 
-### Auf einem Windows-System / On a Windows System
+Starten Sie die Anwendung einfach mit `runexport.cmd` auf Windows oder `runexport.sh` auf Linux/Unix. Diese Skripte erleichtern die Ausführung und sorgen für eine reibungslose Integration.
+
+Simply start the application with `runexport.cmd` on Windows or `runexport.sh` on Linux/Unix.
+
+### Auf einem Windows-System / On a Windows System `runexport.cmd`
 
 ```cmd
 java -cp "zeus-access-400-1.0-SNAPSHOT.jar;jt400.jar" de.zeus.hermes.AppInitializer application.properties
 ```
-### Linux/Unix-System/System-i 
+### Linux/Unix-System/System-i `runexport.sh`
 
 ```cmd
 java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitializer application.properties
