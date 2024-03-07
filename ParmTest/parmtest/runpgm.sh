@@ -1,1 +1,0 @@
-java -cp ParmTest.jar parmtest.ParmTest $1
