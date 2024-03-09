@@ -1,6 +1,5 @@
 package de.zeus.hermes;
 
-import de.zeus.hermes.service.DatabaseService;
 import de.zeus.hermes.util.Config;
 import de.zeus.hermes.util.PropertiesLoader;
 
@@ -49,21 +48,26 @@ public class AppInitializer {
 
         // Initialize the config with the read properties
         Config config = Config.getInstance();
-        config.setDriver(properties.getProperty("driver"));
-        config.setDatabaseUrl(properties.getProperty("databaseUrl"));
-        config.setUsername(properties.getProperty("username"));
-        config.setPassword(properties.getProperty("password"));
-        config.setQuery(properties.getProperty("query"));
-        config.loadExportFormatsFromString(properties.getProperty("exportFormats"));
-        config.setXsltPath(properties.getProperty("xsltpath"));
-        config.setExportPath(properties.getProperty("exportpath"));
+        config.setDriver(properties.getProperty("db.driver"));
+        config.setDatabaseUrl(properties.getProperty("db.url"));
+        config.setUsername(properties.getProperty("db.username"));
+        config.setPassword(properties.getProperty("db.password"));
+        config.setQuery(properties.getProperty("db.query"));
+        config.loadExportFormatsFromString(properties.getProperty("export.formats"));
+        config.setXsltPath(properties.getProperty("export.xsltpath"));
+        config.setExportPath(properties.getProperty("export.filepath"));
+        config.setAs400System(properties.getProperty("as400.system"));
+        config.setAs400Username(properties.getProperty("as400.username"));
+        config.setAs400Password(properties.getProperty("as400.password"));
+        config.setDataQueueLibrary(properties.getProperty("dataqueue.library"));
+        config.setRpgToJavaQueueName(properties.getProperty("dataqueue.rpg2java"));
+        config.setJavaToRpgQueueName(properties.getProperty("dataqueue.java2rpg"));
+        config.setMaxEntryLength(Integer.parseInt(properties.getProperty("dataqueue.maxEntryLength",
+                "512")));
+        config.setDataQueueDescription(properties.getProperty("dataqueue.description"));
 
-        // Log access to the configuration values as an example of successful configuration loading
-        LOGGER.log(Level.INFO, "Database-URL: {0}", config.getDatabaseUrl());
+        ApplicationRunner applicationRunner = new ApplicationRunner(Config.getInstance());
+        applicationRunner.run(args);
 
-        // Initialize DatabaseService and perform the SQL to XML process
-        DatabaseService dbService = new DatabaseService();
-        LOGGER.log(Level.INFO, "Starting the SQL to XML export process.");
-        dbService.perform();
     }
 }

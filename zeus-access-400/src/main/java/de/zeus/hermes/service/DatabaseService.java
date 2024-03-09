@@ -24,13 +24,13 @@ public class DatabaseService {
     private final DatabaseController databaseController = new DatabaseController();
 
     /**
-     * Initiates the process of exporting SQL query results to an XML file. This method leverages the DatabaseController
-     * to connect to the database, execute a predefined SQL query, and export the results as XML. It encapsulates all
-     * necessary steps to accomplish this task, offering a simplified and direct way to generate XML files from database
-     * query results.
+     * Initiates the process of exporting SQL query results to an XML file
+     * and optionally other formats as specified in configuration.
+     *
+     * @param sqlQuery The SQL query to execute
      */
-    public void perform() {
-        LOGGER.log(Level.INFO, "Initiating SQL to XML export process.");
-        databaseController.runSqlToExportProcess();
+    public void perform(String sqlQuery) {
+        LOGGER.log(Level.INFO, "Initiating SQL to XML export process with query: {0}", sqlQuery);
+        databaseController.runSqlToMultiExportProcess(sqlQuery);
     }
 }

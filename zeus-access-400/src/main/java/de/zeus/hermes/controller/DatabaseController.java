@@ -53,11 +53,10 @@ public class DatabaseController {
      * Executes the configured SQL query, exports results to XML, and transforms them into specified formats.
      * Demonstrates flexible data handling and export capabilities.
      */
-    public void runSqlToExportProcess() {
+    public void runSqlToMultiExportProcess(String sqlQuery) {
         try {
             connectToDatabase();
-            String query = config.getQuery();
-            PreparedStatement stmt = dbManager.getPreparedStmt(connection, query);
+            PreparedStatement stmt = dbManager.getPreparedStmt(connection, sqlQuery);
             ResultSet rs = stmt.executeQuery();
             Set<String> exportFormats = config.getExportFormats();
             String baseFileName = generateBaseFileName("export");

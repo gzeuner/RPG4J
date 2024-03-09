@@ -31,6 +31,15 @@ public class Config {
     private String query;
     private String xsltPath;
     private String exportPath;
+    private String as400System;
+    private String as400Username;
+    private String as400Password;
+    private String dataQueueLibrary;
+    private String rpgToJavaQueueName;
+    private String javaToRpgQueueName;
+    private int maxEntryLength;
+    private String dataQueueDescription;
+
     private final Set<String> exportFormats = new HashSet<>();
 
     // Private constructor to prevent instantiation outside
@@ -106,6 +115,70 @@ public class Config {
 
     public void setExportPath(String exportPath) {
         this.exportPath = exportPath;
+    }
+
+    public String getAs400System() {
+        return as400System;
+    }
+
+    public void setAs400System(String as400System) {
+        this.as400System = as400System;
+    }
+
+    public String getAs400Username() {
+        return as400Username;
+    }
+
+    public void setAs400Username(String as400Username) {
+        this.as400Username = as400Username;
+    }
+
+    public String getAs400Password() {
+        return as400Password;
+    }
+
+    public void setAs400Password(String as400Password) {
+        this.as400Password = as400Password;
+    }
+
+    public String getDataQueueLibrary() {
+        return dataQueueLibrary;
+    }
+
+    public void setDataQueueLibrary(String dataQueueLibrary) {
+        this.dataQueueLibrary = dataQueueLibrary;
+    }
+
+    public String getRpgToJavaQueueName() {
+        return rpgToJavaQueueName;
+    }
+
+    public void setRpgToJavaQueueName(String rpgToJavaQueueName) {
+        this.rpgToJavaQueueName = rpgToJavaQueueName;
+    }
+
+    public String getJavaToRpgQueueName() {
+        return javaToRpgQueueName;
+    }
+
+    public void setJavaToRpgQueueName(String javaToRpgQueueName) {
+        this.javaToRpgQueueName = javaToRpgQueueName;
+    }
+
+    public int getMaxEntryLength() {
+        return maxEntryLength;
+    }
+
+    public void setMaxEntryLength(int maxEntryLength) {
+        this.maxEntryLength = maxEntryLength;
+    }
+
+    public String getDataQueueDescription() {
+        return dataQueueDescription;
+    }
+
+    public void setDataQueueDescription(String dataQueueDescription) {
+        this.dataQueueDescription = dataQueueDescription;
     }
 
     // Method to add formats from a comma-separated string (for easy loading from properties file)
