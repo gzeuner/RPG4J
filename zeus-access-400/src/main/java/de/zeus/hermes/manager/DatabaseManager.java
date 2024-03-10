@@ -26,6 +26,18 @@ import java.util.logging.Logger;
 public class DatabaseManager {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseManager.class.getName());
+    private static DatabaseManager instance;
+
+    private DatabaseManager() {
+        // No objects should be created from this class.
+    }
+
+    public static synchronized DatabaseManager getInstance() {
+        if (instance == null) {
+            instance = new DatabaseManager();
+        }
+        return instance;
+    }
 
     public Connection getDatabaseConnection(String driver, String url, String user, String pwd) {
         Connection con = null;

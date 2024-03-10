@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class DatabaseController {
 
     private static final Logger LOGGER = Logger.getLogger(DatabaseController.class.getName());
-    private final DatabaseManager dbManager = new DatabaseManager();
+    private final DatabaseManager dbManager = DatabaseManager.getInstance();
     private final Config config = Config.getInstance();
     private Connection connection = null;
 

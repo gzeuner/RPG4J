@@ -1,10 +1,8 @@
 package de.zeus.hermes;
 
-import de.zeus.hermes.manager.System400Manager;
 import de.zeus.hermes.service.DataQueueService;
 import de.zeus.hermes.service.DatabaseService;
 import de.zeus.hermes.util.Config;
-import de.zeus.hermes.util.GenericRestClient;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -62,37 +60,13 @@ public class ApplicationRunner {
             case "qLink":
                 executeDtaQueue();
                 break;
-            case "restApi":
-                executeRestApi();
+            case "queueTest":
+                executeQueueTest();
                 break;
             default:
                 LOGGER.log(Level.SEVERE, "Invalid runMode specified.");
         }
     }
-
-    /**
-     * Fetches weather data from the MetaWeather API for Berlin.
-     */
-    private void executeRestApi() {
-        // URL of the MetaWeather API endpoint for Berlin
-        String restUrl = "https://wttr.in/Berlin?format=%C+%t+%w\n";
-        ;
-
-        // Create an instance of GenericRestClient
-        GenericRestClient restClient = new GenericRestClient();
-
-        // Fetch data from the MetaWeather API
-        String responseData = restClient.fetchResponseAsString(restUrl);
-
-        // Process the fetched data (e.g., parse JSON)
-        if (responseData != null) {
-            // Process the data (e.g., convert JSON to Java objects)
-            LOGGER.log(Level.INFO, "Received weather data for Berlin from MetaWeather API: {0}", responseData);
-        } else {
-            LOGGER.log(Level.SEVERE, "Failed to fetch weather data for Berlin from MetaWeather API.");
-        }
-    }
-
 
     /**
      * Executes the SQL export process using the provided SQL query.
@@ -107,7 +81,11 @@ public class ApplicationRunner {
      * Manages data queue operations for integration scenarios.
      */
     private void executeDtaQueue() {
-        DataQueueService dataQueueService = new DataQueueService(new System400Manager());
-        dataQueueService.manageDataQueue();
+        DataQueueService dataQueueService = new DataQueueService();
+        dataQueueService.processQueueAndCallREST();
     }
-}
+
+    private void executeQueueTest() {
+        new DataQueueServiceTest().runTest();;
+    }
+ }
