@@ -34,7 +34,7 @@ public class DataQueueServiceTest {
 
         // Read the result from the second queue and log it
         String result = readFromQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
-        LOGGER.info("Ergebnis des REST-Calls: " + result);
+        LOGGER.info("REST-Call result: " + result);
     }
 
     private void writeToQueue(String library, String queueName, String message) {
