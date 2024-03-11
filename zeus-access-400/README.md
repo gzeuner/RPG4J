@@ -27,14 +27,20 @@ Starten Sie die Anwendung einfach mit `runexport.cmd` auf Windows oder `runexpor
 Simply start the application with `runexport.cmd` on Windows or `runexport.sh` on Linux/Unix.
 
 ### Auf einem Windows-System / On a Windows System `runexport.cmd`
+#### Example Call 1: SQL Statement from properties
+#### Example Call 2: SQL Statement as parameter
 
 ```cmd
-java -cp "zeus-access-400-1.0-SNAPSHOT.jar;jt400.jar" de.zeus.hermes.AppInitializer application.properties
+java -cp "zeus-access-400-1.0-SNAPSHOT.jar;jt400.jar" de.zeus.hermes.AppInitializer application.properties --runMode sqlExport
+java -cp "zeus-access-400-1.0-SNAPSHOT.jar;jt400.jar" de.zeus.hermes.AppInitializer application.properties --runMode sqlExport --sql "select * from your_lib.your_table"
 ```
 ### Linux/Unix-System/System-i `runexport.sh`
+#### Example Call 1: SQL Statement from properties
+#### Example Call 2: SQL Statement as parameter
 
 ```cmd
-java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitializer application.properties
+java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitializer application.properties --runMode sqlExport
+java -cp "zeus-access-400-1.0-SNAPSHOT.jar:jt400.jar" de.zeus.hermes.AppInitializer application.properties --runMode sqlExport --sql "select * from your_lib.your_table"
 ```
 
 ## Unterstützte Export-Datenformate / Supported Export Data Formats
