@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 public class DataQueueService {
 
     private static final Logger LOGGER = Logger.getLogger(DataQueueService.class.getName());
-    public static final String DTAQ = "DTAQ";
     private final QueueManager queueManager = QueueManager.getInstance();
     private final Config config = Config.getInstance();
 
@@ -30,7 +29,7 @@ public class DataQueueService {
         String queueName = config.getRpgToJavaQueueName();
         try {
             // Read Message from queue
-            String path = QSYSObjectPathName.toPath(library, queueName, DTAQ);
+            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
             DataQueue queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
             DataQueueEntry entry = queue.read(-1);
             String message = new String(entry.getData(), StandardCharsets.UTF_8);
@@ -40,7 +39,7 @@ public class DataQueueService {
 
             // Send Answer to second queue
             String responseQueueName = config.getJavaToRpgQueueName();
-            path = QSYSObjectPathName.toPath(library, responseQueueName, DTAQ);
+            path = QSYSObjectPathName.toPath(library, responseQueueName, Config.DTAQ);
             DataQueue responseQueue = new DataQueue(System400Manager.getInstance().getAs400(), path);
             responseQueue.write(response.getBytes(StandardCharsets.UTF_8));
 

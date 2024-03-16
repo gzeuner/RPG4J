@@ -39,6 +39,7 @@ public class Config {
     private String javaToRpgQueueName;
     private int maxEntryLength;
     private String dataQueueDescription;
+    public static final String DTAQ = "DTAQ";
 
     private final Set<String> exportFormats = new HashSet<>();
 

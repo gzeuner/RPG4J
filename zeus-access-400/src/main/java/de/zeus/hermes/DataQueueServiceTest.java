@@ -24,7 +24,7 @@ public class DataQueueServiceTest {
 
     public void runTest() {
         // Define the test URL
-        String testUrl = "https://wttr.in/Berlin?format=%C+%t+%w";
+        String testUrl = "https://official-joke-api.appspot.com/random_joke";
 
         // Write the test URL in the first queue
         writeToQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName(), testUrl);
@@ -39,7 +39,7 @@ public class DataQueueServiceTest {
 
     private void writeToQueue(String library, String queueName, String message) {
         try {
-            String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
+            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
             DataQueue queue = new DataQueue(system400Manager.getAs400(), path);
             queue.write(message.getBytes(StandardCharsets.UTF_8));
             LOGGER.info("Message successfully written to the queue.");
@@ -50,7 +50,7 @@ public class DataQueueServiceTest {
 
     private String readFromQueue(String library, String queueName) {
         try {
-            String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
+            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
             DataQueue queue = new DataQueue(system400Manager.getAs400(), path);
             DataQueueEntry entry = queue.read(-1);
             return new String(entry.getData(), StandardCharsets.UTF_8);

@@ -36,7 +36,7 @@ public class QueueManager {
 
     public void createOrOpenDataQueue(String library, String queueName) {
         try {
-            String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
+            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
             DataQueue queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
 
             if (!queue.exists()) {
@@ -56,7 +56,7 @@ public class QueueManager {
 
     public void clearDataQueue(String library, String queueName) {
         try {
-            String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
+            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
             DataQueue queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
 
             if (queue.exists()) {
