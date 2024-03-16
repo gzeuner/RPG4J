@@ -31,8 +31,8 @@ dcl-pr ReadFromQueue extpgm('QRCVDTAQ');
 end-pr;
 
 // Variables declaration and Main pgm
-dcl-s queueLib char(10) inz('ZEUS1');
-dcl-s dataToSend char(256) inz('https://wttr.in/Berlin?format=%C+%t+%w');
+dcl-s queueLib char(10) inz('YOUR_LIB');
+dcl-s dataToSend char(256) inz('https://official-joke-api.appspot.com/random_joke');
 dcl-s dataReceived char(256);
 dcl-s waitTime int(10) inz(30);
 dcl-s keyPress char(1);
