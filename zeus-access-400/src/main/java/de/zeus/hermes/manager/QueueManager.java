@@ -30,8 +30,8 @@ public class QueueManager {
         LOGGER.log(Level.INFO, "Managing Data Queue.");
         createOrOpenDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
         createOrOpenDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
-        //clearDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
-        //clearDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
+        clearDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
+        clearDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
     }
 
     public void createOrOpenDataQueue(String library, String queueName) {
