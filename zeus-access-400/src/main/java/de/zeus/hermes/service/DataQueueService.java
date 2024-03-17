@@ -25,23 +25,16 @@ public class DataQueueService {
 
     // Read Queue and perform Call
     public void processQueueAndCallREST() {
-        String library = config.getDataQueueLibrary();
-        String queueName = config.getRpgToJavaQueueName();
         try {
             // Read Message from queue
-            String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
-            DataQueue queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
-            DataQueueEntry entry = queue.read(-1);
+            DataQueueEntry entry = this.queueManager.getRpgToJava().read(-1);
             String message = new String(entry.getData(), StandardCharsets.UTF_8);
 
             // Perform REST-Call
             String response = performRestCall(message);
 
-            // Send Answer to second queue
-            String responseQueueName = config.getJavaToRpgQueueName();
-            path = QSYSObjectPathName.toPath(library, responseQueueName, Config.DTAQ);
-            DataQueue responseQueue = new DataQueue(System400Manager.getInstance().getAs400(), path);
-            responseQueue.write(response.getBytes(StandardCharsets.UTF_8));
+            // Send Answer to second queue;
+            this.queueManager.getJavaToRpg().write(response.getBytes(StandardCharsets.UTF_8));
 
             LOGGER.info("REST call response successfully sent back to RPG program.");
         } catch (Exception e) {

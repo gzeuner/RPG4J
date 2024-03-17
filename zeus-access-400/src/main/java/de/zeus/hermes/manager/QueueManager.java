@@ -13,6 +13,8 @@ public class QueueManager {
     private static final Logger LOGGER = Logger.getLogger(QueueManager.class.getName());
     private final Config config = Config.getInstance();
     private static QueueManager instance;
+    private DataQueue javaToRpg;
+    private DataQueue rpgToJava;
 
     private QueueManager() {
         // No objects should be created from this class.
@@ -28,16 +30,18 @@ public class QueueManager {
 
     public void manageDataQueue() {
         LOGGER.log(Level.INFO, "Managing Data Queue.");
-        createOrOpenDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
-        createOrOpenDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
+        this.javaToRpg = createOrOpenDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
+        this.rpgToJava = createOrOpenDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
         clearDataQueue(config.getDataQueueLibrary(), config.getJavaToRpgQueueName());
         clearDataQueue(config.getDataQueueLibrary(), config.getRpgToJavaQueueName());
     }
 
-    public void createOrOpenDataQueue(String library, String queueName) {
+    public DataQueue createOrOpenDataQueue(String library, String queueName) {
+
+        DataQueue queue = null;
         try {
             String path = QSYSObjectPathName.toPath(library, queueName, Config.DTAQ);
-            DataQueue queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
+            queue = new DataQueue(System400Manager.getInstance().getAs400(), path);
 
             if (!queue.exists()) {
                 LOGGER.info(String.format("Data Queue [%s] does not exist," +
@@ -52,6 +56,7 @@ public class QueueManager {
             LOGGER.log(Level.SEVERE,
                     String.format("Failed to create Data Queue [%s] .", queueName), e);
         }
+        return queue;
     }
 
     public void clearDataQueue(String library, String queueName) {
@@ -70,4 +75,11 @@ public class QueueManager {
         }
     }
 
+    public DataQueue getJavaToRpg() {
+        return javaToRpg;
+    }
+
+    public DataQueue getRpgToJava() {
+        return rpgToJava;
+    }
 }
