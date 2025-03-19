@@ -6,9 +6,13 @@ import de.zeus.hermes.service.WorkflowEngine;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.file.GenericFile;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
@@ -17,18 +21,14 @@ import org.springframework.stereotype.Component;
  */
 
 /**
- * Defines a Camel route for processing workflow YAML files from the hot folder.
+ * Camel route for processing workflow YAML files from the hotfolder using a timer.
  * <p>
- * This class configures a route that:
- * <ul>
- *     <li>Monitors the configured hot folder for YAML files</li>
- *     <li>Loads the workflow using the file adapter</li>
- *     <li>Triggers workflow execution via the WorkflowEngine</li>
- * </ul>
+ * Periodically scans the configured hotfolder for YAML files, loads and executes the workflow,
+ * and moves the processed file to the processed folder with a timestamp.
  * </p>
  *
  * @author gzeuner
- * @version 1.0.1
+ * @version 1.0
  * @since 2024
  */
 @Slf4j
@@ -36,26 +36,63 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class WorkflowRoute extends RouteBuilder {
 
-    private final WorkflowEngine workflowEngine;
     private final FileConnectionPoint fileAdapter;
+    private final WorkflowEngine workflowEngine;
+
+    @Value("${workflow.hot-folder}")
+    private String hotFolder;
+
+    @Value("${workflow.processed-folder}")
+    private String processedFolder;
 
     @Override
     public void configure() {
-        // Define the route from the file endpoint using the configured hot folder.
-        from("file://{{workflow.hot-folder}}?noop=true&include=.*\\.yaml")
-                // Process the file: load the workflow from the file and set it as the message body.
+        log.info("Configuring Camel timer route for hotfolder: {}", hotFolder);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
+
+        from("timer:scanHotfolder?period=5000")
+                .routeId("hotfolderTimerRoute")
                 .process(exchange -> {
-                    GenericFile<?> file = exchange.getIn().getBody(GenericFile.class);
-                    log.info("New workflow file found: {}", file.getFileName());
-                    String filePath = file.getAbsoluteFilePath();
-                    Workflow workflow = fileAdapter.loadWorkflow(filePath);
-                    exchange.getIn().setBody(workflow);
-                })
-                // Process the workflow: execute the loaded workflow.
-                .process(exchange -> {
-                    Workflow workflow = exchange.getIn().getBody(Workflow.class);
-                    log.info("Starting workflow execution: {}", workflow);
-                    workflowEngine.execute(workflow);
+                    log.debug("Timer triggered, scanning hotfolder: {}", hotFolder);
+                    File hotFolderDir = new File(hotFolder);
+                    if (!hotFolderDir.exists() || !hotFolderDir.isDirectory()) {
+                        log.warn("Hotfolder '{}' does not exist or is not a directory.", hotFolder);
+                        return;
+                    }
+
+                    File[] yamlFiles = hotFolderDir.listFiles((dir, name) -> {
+                        boolean matches = name.toLowerCase().endsWith(".yaml");
+                        log.debug("Checking file: {}, matches .yaml: {}", name, matches);
+                        return matches;
+                    });
+                    if (yamlFiles == null || yamlFiles.length == 0) {
+                        log.debug("No YAML files found in hotfolder '{}'.", hotFolder);
+                        return;
+                    }
+
+                    for (File file : yamlFiles) {
+                        String filePath = file.getAbsolutePath();
+                        log.info("Processing workflow file: {}", filePath);
+
+                        try {
+                            Workflow workflow = fileAdapter.loadWorkflow(filePath);
+                            workflowEngine.execute(workflow);
+
+                            String fileName = Paths.get(filePath).getFileName().toString();
+                            String timestamp = dateFormat.format(new Date());
+                            String processedFileName = fileName.replace(".yaml", "_" + timestamp + ".yaml");
+                            String processedFilePath = Paths.get(processedFolder, processedFileName).toString();
+
+                            File processedFile = new File(processedFilePath);
+                            if (file.renameTo(processedFile)) {
+                                log.info("Moved processed file to: {}", processedFilePath);
+                            } else {
+                                log.error("Failed to move file to: {}", processedFilePath);
+                            }
+                        } catch (Exception e) {
+                            log.error("Error processing workflow file '{}': {}", filePath, e.getMessage(), e);
+                        }
+                    }
                 });
     }
 }

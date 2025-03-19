@@ -5,29 +5,29 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.util.Map;
-/*
- * Copyright 2024 gzeuner (https://tiny-tool.de)
- *
- * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
- */
 
 /**
- * Service for rendering templates using the FreeMarker template engine.
- *
+ * Service for rendering FreeMarker templates with data models.
  * <p>
- * This service processes FreeMarker templates with the provided data models
- * and returns the rendered output as a string. It is designed to be used within
- * {@link WorkflowEngine} to generate dynamic content for emails, reports, or logs.
- * In case of an error, it logs the issue and returns a fallback value.
+ * This service processes FreeMarker templates by prioritizing the filesystem if the template exists there.
+ * If not found, it falls back to loading from the JAR's configured template directory via {@link Configuration}.
+ * It is used within {@link WorkflowEngine} to generate dynamic content such as emails, reports, or logs.
+ * Errors are logged, and a fallback empty string is returned in case of failure.
  * </p>
  *
+ * @author gzeuner
  * @version 1.0.1
+ * @since 2024
  */
 @Slf4j
 @Service
@@ -39,15 +39,15 @@ public class TemplateService {
     /**
      * Renders a FreeMarker template using the specified data model.
      * <p>
-     * The template is loaded from the configured FreeMarker {@link Configuration}, processed with the given model,
-     * and returned as a string. If the template name is invalid, the model is null, or rendering fails,
-     * a fallback empty string is returned.
+     * Attempts to load the template from the filesystem first, stripping any 'classpath:' prefix if present.
+     * If not found, falls back to loading from the JAR via the FreeMarker {@link Configuration}.
+     * The template is processed with the provided model and returned as a string.
+     * Returns an empty string if the template name is invalid, the model is null, or rendering fails.
      * </p>
      *
-     * @param templateName the name of the template file (e.g., "email.ftl"). Can include a "classpath:" prefix, which will be stripped.
-     *                     Must not be null or blank.
-     * @param model        the data model for the template, containing key-value pairs for substitution. Must not be null.
-     * @return the rendered template content as a string, or an empty string if an error occurs.
+     * @param templateName the name or path of the template file (e.g., "email.ftl" or "classpath:/templates/email.ftl")
+     * @param model        the data model containing key-value pairs for template substitution, must not be null
+     * @return the rendered template content as a string, or an empty string if an error occurs
      */
     public String renderTemplate(final String templateName, final Map<String, Object> model) {
         // Validate template name
@@ -61,26 +61,39 @@ public class TemplateService {
             return "";
         }
 
-        // Normalize the template name by removing a possible "classpath:" prefix.
-        final String normalizedTemplateName = templateName.replace("classpath:", "");
+        // Normalize the template name by removing 'classpath:' prefix
+        final String normalizedTemplateName = templateName.replace("classpath:", "").replaceFirst("^/", "");
 
-        try {
-            // Load the FreeMarker template from the configuration.
-            final Template template = freemarkerConfig.getTemplate(normalizedTemplateName);
-            // Use try-with-resources to manage the StringWriter.
-            try (final StringWriter writer = new StringWriter()) {
-                // Process the template with the provided model.
+        // Step 1: Attempt to load from filesystem
+        File file = new File(normalizedTemplateName);
+        if (file.exists() && file.isFile()) {
+            try (InputStreamReader reader = new InputStreamReader(Files.newInputStream(file.toPath()));
+                 StringWriter writer = new StringWriter()) {
+                Template template = new Template(normalizedTemplateName, reader, freemarkerConfig);
                 template.process(model, writer);
-                log.info("Template '{}' rendered successfully.", normalizedTemplateName);
+                log.info("Template '{}' rendered successfully from filesystem.", normalizedTemplateName);
+                return writer.toString();
+            } catch (IOException e) {
+                log.warn("Failed to load template '{}' from filesystem: {}. Falling back to JAR.", normalizedTemplateName, e.getMessage());
+            } catch (TemplateException e) {
+                log.error("Error processing template '{}' from filesystem: {}", normalizedTemplateName, e.getMessage(), e);
+                return "";
+            }
+        }
+
+        // Step 2: Fallback to JAR via FreeMarker Configuration
+        try {
+            Template template = freemarkerConfig.getTemplate(normalizedTemplateName);
+            try (StringWriter writer = new StringWriter()) {
+                template.process(model, writer);
+                log.info("Template '{}' rendered successfully from JAR.", normalizedTemplateName);
                 return writer.toString();
             }
         } catch (IOException e) {
-            // Log I/O errors (e.g., template not found) and return fallback.
-            log.error("Error loading template '{}': {}", normalizedTemplateName, e.getMessage(), e);
+            log.error("Error loading template '{}' from JAR: {}", normalizedTemplateName, e.getMessage(), e);
             return "";
         } catch (TemplateException e) {
-            // Log processing errors (e.g., syntax or data issues) and return fallback.
-            log.error("Error processing template '{}'. Context: {}", normalizedTemplateName, model, e);
+            log.error("Error processing template '{}' from JAR. Context: {}", normalizedTemplateName, model, e);
             return "";
         }
     }

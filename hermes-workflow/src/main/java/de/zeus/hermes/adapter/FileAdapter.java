@@ -7,8 +7,11 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
@@ -19,7 +22,8 @@ import java.io.InputStream;
 /**
  * Implementation of the {@link FileConnectionPoint} interface.
  * <p>
- * This adapter uses {@link WorkflowConfig} to load YAML workflows from a file.
+ * This adapter uses {@link WorkflowConfig} to load YAML workflows from either the filesystem or the JAR.
+ * It prioritizes loading from the filesystem if the file exists, falling back to the JAR's resources/workflows directory.
  * </p>
  *
  * @author gzeuner
@@ -33,19 +37,25 @@ public class FileAdapter implements FileConnectionPoint {
     private final WorkflowConfig workflowConfig;
     private final ResourceLoader resourceLoader;
 
-    /**
-     * Loads a workflow from the specified file path.
-     *
-     * @param filePath the path to the workflow file.
-     * @return the loaded {@link Workflow}.
-     * @throws IOException if the file is not found or an error occurs while reading the file.
-     */
     @Override
     public Workflow loadWorkflow(String filePath) throws IOException {
-        Resource resource = resourceLoader.getResource(filePath);
+        // Remove ‘classpath:’ for file system check
+        String cleanFilePath = filePath.replace("classpath:", "").replaceFirst("^/", "");
+
+        // Step 1: Check the file system first
+        File file = new File(cleanFilePath);
+        if (file.exists() && file.isFile()) {
+            try (InputStream inputStream = Files.newInputStream(file.toPath())) {
+                return workflowConfig.loadWorkflow(inputStream);
+            }
+        }
+
+        // Step 2: Fallback to JAR resource
+        String classpathPath = "classpath:workflows/" + Paths.get(cleanFilePath).getFileName().toString();
+        Resource resource = resourceLoader.getResource(classpathPath);
 
         if (!resource.exists()) {
-            throw new IOException("Workflow file not found: " + filePath);
+            throw new IOException("Workflow file not found in filesystem or JAR: " + filePath);
         }
 
         try (InputStream inputStream = resource.getInputStream()) {

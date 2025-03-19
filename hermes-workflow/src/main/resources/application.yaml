@@ -4,9 +4,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.ibm.as400.access.AS400JDBCDriver
-    url: jdbc:as400://system/bib;translate binary=true
-    username: user
-    password: pass
+    url: jdbc:as400://${AS400_SYSTEM:system}/bib;translate binary=true
+    username: ${DB_USERNAME:user}
+    password: ${DB_PASSWORD:pass}
 
   freemarker:
     template-loader-path: classpath:/templates/
@@ -15,8 +15,8 @@ spring:
     check-template-location: true
 
 workflow:
-  hot-folder: /path/to/hotfolder
-  default-workflow: classpath:/workflows/emailWorkflow.yaml
+  hot-folder: ${HOT_FOLDER:${user.dir}/hotfolder}
+  processed-folder: ${PROCESSED_FOLDER:${user.dir}/processed}
   executeSql:
     defaultQuery: "SELECT 'Fallback' AS Wert FROM SYSIBM.SYSDUMMY1"
   applyTemplate:
@@ -27,33 +27,33 @@ workflow:
 
 export:
   xslt-path: classpath:/xslt
-  file-path: classpath:/export
+  file-path: ${EXPORT_DIR:classpath:/export}
   formats: html, json, jsonl, csv, md
 
 as400:
-  system: YOUR_SYSTEM
-  username: YOUR_USER
-  password: YOUR_PWD
+  system: ${AS400_SYSTEM:YOUR_SYSTEM}
+  username: ${AS400_USERNAME:YOUR_USER}
+  password: ${AS400_PASSWORD:YOUR_PWD}
 
 dataqueue:
-  library: YOUR_LIB
+  library: ${QUEUE_LIBRARY:YOUR_LIB}
   rpg2java: RP2JQ
   java2rpg: J2RPQ
   max-entry-length: 512
   description: "Java-RPG Integration Queue"
 
 mail:
-  host: ip
-  port: port
-  username: user
-  password: pass
+  host: ${MAIL_HOST:smtp.example.com}
+  port: ${MAIL_PORT:587}
+  username: ${MAIL_USERNAME:user}
+  password: ${MAIL_PASSWORD:pass}
   from: noreply@example.com
   properties:
-    mail.smtp.auth: false
-    mail.smtp.starttls.enable: false
+    mail.smtp.auth: true
+    mail.smtp.starttls.enable: true
 
 encryption:
-  key: mySuperSecretKey0815
+  key: ${ENCRYPTION_KEY:mySuperSecretKey0815}
 
 fallback:
   recipients: "my.mail@localhost.local"
