@@ -1,7 +1,5 @@
 package de.zeus.hermes.service;
 
-import de.zeus.hermes.model.Workflow;
-import de.zeus.hermes.model.WorkflowStep;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataAccessException;
@@ -21,14 +19,17 @@ import java.util.Map;
  * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
  */
 
-
 /**
  * Service for executing SQL queries using Spring's {@link JdbcTemplate}.
+ *
  * <p>
- * Provides methods to execute queries and retrieve results as lists, maps, or single-column data,
- * with metadata support. Designed to integrate with {@link WorkflowEngine} by handling errors gracefully
- * and returning fallback values.
+ * This service provides methods to execute SQL queries and retrieve results
+ * as lists, maps, or single-column values while supporting metadata extraction.
+ * It is designed for integration with {@link WorkflowEngine}, ensuring errors
+ * are handled gracefully by logging them and returning fallback values when necessary.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Service

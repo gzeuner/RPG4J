@@ -23,10 +23,14 @@ import java.util.Map;
 
 /**
  * Configuration class for loading workflows from a YAML file.
+ *
  * <p>
- * This class parses the YAML input stream and creates a {@link Workflow} instance
- * by constructing each {@link WorkflowStep} using the {@link WorkflowStepFactory}.
+ * This class parses a YAML input stream and constructs a {@link Workflow} instance
+ * by creating each {@link WorkflowStep} using the {@link WorkflowStepFactory}.
+ * It ensures that workflows are dynamically loaded and properly initialized for execution.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Component
@@ -41,8 +45,8 @@ public class WorkflowConfig {
      * Loads a {@link Workflow} from the provided YAML input stream.
      *
      * @param inputStream the input stream of the YAML workflow configuration.
-     * @return a {@link Workflow} containing the list of workflow steps.
-     * @throws IOException if an I/O error occurs during reading the input stream.
+     * @return a {@link Workflow} instance containing the list of workflow steps.
+     * @throws IOException if an I/O error occurs while reading the input stream.
      */
     public Workflow loadWorkflow(final InputStream inputStream) throws IOException {
         // Parse the YAML input stream

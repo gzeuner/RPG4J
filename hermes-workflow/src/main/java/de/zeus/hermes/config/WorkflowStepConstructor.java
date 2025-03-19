@@ -20,10 +20,15 @@ import java.util.Map;
  */
 
 /**
- * Custom YAML constructor for creating WorkflowStep instances.
+ * Custom YAML constructor for creating {@link WorkflowStep} instances.
+ *
  * <p>
- * This constructor maps YAML properties to the corresponding WorkflowStep implementation.
+ * This constructor maps YAML properties to their corresponding {@link WorkflowStep} implementations.
+ * It is responsible for parsing workflow step definitions from YAML configuration and ensuring
+ * they are instantiated correctly.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 public class WorkflowStepConstructor extends Constructor {

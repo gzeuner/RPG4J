@@ -1,4 +1,5 @@
 package de.zeus.hermes.model;
+
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
@@ -7,9 +8,15 @@ package de.zeus.hermes.model;
  */
 
 /**
- * An exception thrown during the execution of a {@link WorkflowStep} to indicate a failure.
- * This exception wraps a specific error message and an underlying cause, allowing detailed error reporting
- * within a workflow execution context, such as in {@link WorkflowEngine}.
+ * Exception thrown during the execution of a {@link WorkflowStep} to indicate a failure.
+ *
+ * <p>
+ * This exception encapsulates an error message and an optional underlying cause, allowing
+ * detailed error reporting within a workflow execution context. It is primarily used
+ * in {@link de.zeus.hermes.service.WorkflowEngine} to handle workflow step failures.
+ * </p>
+ *
+ * @version 1.0.1
  */
 public class WorkflowStepException extends RuntimeException {
 

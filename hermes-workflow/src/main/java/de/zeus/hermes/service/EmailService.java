@@ -21,10 +21,14 @@ import java.util.Properties;
 
 /**
  * Service for sending emails with optional attachments.
+ *
  * <p>
- * This service sends an email using a dynamically configured SMTP server,
- * with support for attachments.
+ * This service allows sending emails using a dynamically configured SMTP server.
+ * It supports adding attachments and integrates seamlessly with other components
+ * such as {@link WorkflowEngine} to enable automated email notifications.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Service

@@ -11,7 +11,14 @@ import java.util.List;
 
 /**
  * Represents a workflow consisting of a sequence of {@link WorkflowStep} instances.
- * This class encapsulates the steps to be executed by {@link de.zeus.hermes.service.WorkflowEngine}.
+ *
+ * <p>
+ * This class encapsulates the steps that define a workflow, which are executed sequentially
+ * by {@link de.zeus.hermes.service.WorkflowEngine}. It serves as the primary structure for
+ * managing workflow execution logic.
+ * </p>
+ *
+ * @version 1.0.1
  */
 @Data
 public class Workflow {

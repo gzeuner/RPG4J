@@ -17,10 +17,13 @@ import java.util.Map;
 
 /**
  * Service responsible for executing workflows by processing their steps sequentially.
+ *
  * <p>
  * This class orchestrates the execution of {@link WorkflowStep} instances within a {@link Workflow},
- * managing dependencies and an execution context.
+ * managing dependencies and maintaining an execution context.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Service
@@ -33,25 +36,26 @@ public class WorkflowEngine {
     private final EmailService emailService;
 
     /**
-     * Executes a given workflow by iterating through its steps sequentially.
+     * Executes a given workflow by processing its steps sequentially.
+     *
      * <p>
-     * Each step is executed within a shared context that includes required services.
-     * If a step fails, the error is logged and execution continues with the next step.
+     * Each step is executed within a shared execution context that provides access to required services.
+     * If a step encounters an error, it is logged, and execution proceeds to the next step.
      * </p>
      *
      * @param workflow the {@link Workflow} to be executed; must not be null and must contain steps.
      */
     public void execute(final Workflow workflow) {
-        // Validate input: workflow and its steps must be defined.
+        // Validate input: Workflow and steps must be defined.
         if (workflow == null || workflow.getSteps() == null || workflow.getSteps().isEmpty()) {
             log.warn("No workflow or steps defined. Aborting execution.");
             return;
         }
 
         // Log the start of workflow execution.
-        log.info("Starting workflow with {} steps...", workflow.getSteps().size());
+        log.info("Starting workflow execution with {} steps...", workflow.getSteps().size());
 
-        // Initialize the execution context with required services.
+        // Initialize execution context with required services.
         final Map<String, Object> context = new HashMap<>(Map.of(
                 "sqlService", sqlService,
                 "transformationService", transformationService,
@@ -61,7 +65,7 @@ public class WorkflowEngine {
 
         boolean hasErrors = false;
 
-        // Process each step in the workflow sequentially.
+        // Iterate through workflow steps and execute them sequentially.
         for (WorkflowStep step : workflow.getSteps()) {
             try {
                 log.info("Executing step: Class = '{}' | Name = '{}' | Details = {}",
@@ -69,7 +73,7 @@ public class WorkflowEngine {
                         step.getName(),
                         step);
 
-                // Execute the step using the shared context.
+                // Execute the step using the shared execution context.
                 step.execute(context);
 
                 log.info("Step '{}' executed successfully.", step.getName());
@@ -79,7 +83,7 @@ public class WorkflowEngine {
             }
         }
 
-        // Log the final status of workflow execution.
+        // Log final execution status.
         log.info("Workflow execution completed. Errors encountered: {}", hasErrors);
     }
 }

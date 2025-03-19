@@ -17,10 +17,14 @@ import java.util.Map;
 
 /**
  * A {@link WorkflowStep} implementation that transforms data using {@link TransformationService}.
+ *
  * <p>
- * This step fetches SQL query results from the context, applies a transformation based on the specified type,
- * and stores the output filename in the context for subsequent steps.
+ * This step retrieves SQL query results from the execution context, applies a transformation
+ * based on the specified transformation type, and stores the output filename in the context
+ * for use in subsequent workflow steps.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

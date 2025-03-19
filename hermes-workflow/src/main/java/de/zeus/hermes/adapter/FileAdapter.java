@@ -13,7 +13,7 @@ import java.io.InputStream;
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
  * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**
@@ -21,6 +21,10 @@ import java.io.InputStream;
  * <p>
  * This adapter uses {@link WorkflowConfig} to load YAML workflows from a file.
  * </p>
+ *
+ * @author gzeuner
+ * @version 1.0.1
+ * @since 2024
  */
 @Component
 @RequiredArgsConstructor

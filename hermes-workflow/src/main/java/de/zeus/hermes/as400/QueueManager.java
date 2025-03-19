@@ -5,19 +5,28 @@ import com.ibm.as400.access.DataQueue;
 import com.ibm.as400.access.QSYSObjectPathName;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
  * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**
- * Manager for handling DataQueues between Java and RPG.
+ * Manages DataQueues for communication between Java and RPG applications.
  * <p>
- * This class provides methods to obtain the DataQueue for Java-to-RPG and RPG-to-Java communications.
- * The queues are lazily initialized upon first access.
+ * This class provides functionality to:
+ * <ul>
+ *     <li>Access DataQueues for Java-to-RPG communication</li>
+ *     <li>Access DataQueues for RPG-to-Java communication</li>
+ *     <li>Lazily initialize queues on first access</li>
+ * </ul>
  * </p>
+ *
+ * @author gzeuner
+ * @version 1.0
+ * @since 2024
  */
 @Slf4j
 @Component

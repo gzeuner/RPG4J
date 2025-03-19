@@ -10,19 +10,24 @@ import org.springframework.core.env.Environment;
 
 import javax.sql.DataSource;
 import java.util.Objects;
+
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
  * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**
  * Configuration class for setting up the DataSource.
  * <p>
- * This class creates a DataSource bean using database properties provided in the environment.
- * Credentials are decrypted if they are in an encrypted format.
+ * This class creates a DataSource bean using database properties from the environment.
+ * Credentials are decrypted if they are provided in encrypted format.
  * </p>
+ *
+ * @author gzeuner
+ * @version 1.0.1
+ * @since 2024
  */
 @Slf4j
 @Configuration

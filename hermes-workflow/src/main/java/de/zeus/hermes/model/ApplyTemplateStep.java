@@ -16,10 +16,15 @@ import java.util.Map;
  */
 
 /**
- * WorkflowStep implementation that applies email templates using a TemplateService.
+ * A {@link WorkflowStep} implementation that applies email templates using {@link TemplateService}.
+ *
  * <p>
- * It renders the subject and body templates with the provided context data and stores the results back into the context.
+ * This step renders the subject and body templates using the provided context data
+ * and stores the results back into the workflow context. It ensures that dynamic
+ * content is correctly applied before sending emails or generating reports.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

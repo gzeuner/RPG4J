@@ -6,6 +6,24 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+/*
+ * Copyright 2024 gzeuner (https://tiny-tool.de)
+ *
+ * Licensed under the Apache License, Version 2.0
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ */
+
+/**
+ * Utility class for resolving dynamic properties, including encrypted values.
+ *
+ * <p>
+ * This component retrieves configuration values from the environment, decrypts them if necessary,
+ * and applies fallback values from application.yml when needed. It ensures that sensitive properties
+ * (such as credentials) are handled securely and masked in logs.
+ * </p>
+ *
+ * @version 1.0.1
+ */
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -14,8 +32,8 @@ public class DynamicPropertyResolver {
     private final Environment env;
 
     /**
-     * Attempts to use the provided value. If it is null, the default value from application.yml is used.
-     * If the value is encrypted (ENC(...)), it is decrypted.
+     * Resolves a property by checking a given value, falling back to application.yml if necessary.
+     * If the resolved value is encrypted (ENC(...)), it is decrypted before returning.
      *
      * @param value           the preferred value (may be null)
      * @param defaultProperty the key for the default value in application.yml

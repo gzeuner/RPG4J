@@ -20,10 +20,14 @@ import java.util.Objects;
 
 /**
  * A {@link WorkflowStep} implementation that fetches a mail server address from a SQL query using {@link SqlService}.
+ *
  * <p>
- * The mail server is stored in the workflow context under the step's name. If the SQL query fails or returns invalid data,
- * a fallback value from configuration is used.
+ * This step queries the database to retrieve a mail server address and stores it in the workflow context
+ * under the step's name. If the SQL query fails or returns an invalid result, a fallback value from the
+ * application configuration is used, ensuring robust execution.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

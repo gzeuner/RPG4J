@@ -20,11 +20,15 @@ import java.util.Map;
  */
 
 /**
- * Factory for creating WorkflowStep instances.
+ * Factory for creating {@link WorkflowStep} instances.
+ *
  * <p>
- * This factory creates different types of workflow steps based on the provided step type
- * and configures them with the given properties.
+ * This factory dynamically generates different types of workflow steps based on the provided step type
+ * and configures them with the given properties. It ensures that steps are properly initialized
+ * before being executed within a workflow managed by {@link de.zeus.hermes.service.WorkflowEngine}.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Component

@@ -23,10 +23,14 @@ import java.util.Objects;
 
 /**
  * Implementation of {@link WorkflowStep} that executes an SQL query and stores its result in the workflow context.
+ *
  * <p>
- * The SQL query is resolved using dynamic properties. If the resolved query is empty or execution fails,
- * a fallback query is used.
+ * This step resolves an SQL query dynamically using {@link DynamicPropertyResolver}. If the resolved query
+ * is empty or execution fails, a fallback query is used. The result of the query is then stored in the
+ * workflow execution context, making it accessible to subsequent steps.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

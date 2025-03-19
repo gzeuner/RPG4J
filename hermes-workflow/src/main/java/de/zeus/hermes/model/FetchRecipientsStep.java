@@ -21,11 +21,15 @@ import java.util.stream.Collectors;
 
 /**
  * A {@link WorkflowStep} implementation that fetches email recipients from a SQL query using {@link SqlService}.
+ *
  * <p>
- * This step queries the database to retrieve recipient email addresses from the 'wert' column,
- * stores them in the workflow context under "email.recipients", and falls back to default recipients
- * if the query fails or returns no valid recipients.
+ * This step queries the database to retrieve recipient email addresses from the 'wert' column.
+ * The retrieved addresses are stored in the workflow context under "email.recipients". If the query fails
+ * or returns no valid recipients, a fallback to default recipients is applied. This step ensures
+ * that email notifications are always sent to at least one recipient.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

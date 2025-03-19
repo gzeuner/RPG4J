@@ -26,10 +26,15 @@ import java.util.Map;
 
 /**
  * Service for transforming data into XML format using XSLT and exporting it to a file.
+ *
  * <p>
- * This service handles exporting data to an intermediate XML file, applying an XSLT transformation,
- * and saving the final result to a designated output file.
+ * This service provides functionality to convert structured data into an XML file,
+ * apply an XSLT transformation, and save the final output to a specified location.
+ * It integrates both {@link XmlExporter} for XML generation and {@link XMLTransformer}
+ * for applying XSLT transformations.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Service

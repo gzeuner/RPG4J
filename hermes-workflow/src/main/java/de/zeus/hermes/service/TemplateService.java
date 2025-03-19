@@ -19,10 +19,15 @@ import java.util.Map;
 
 /**
  * Service for rendering templates using the FreeMarker template engine.
+ *
  * <p>
- * This service processes FreeMarker templates with provided data models and returns the rendered output as a string.
- * Designed to integrate with {@link WorkflowEngine}, it handles errors gracefully by logging them and returning a fallback value.
+ * This service processes FreeMarker templates with the provided data models
+ * and returns the rendered output as a string. It is designed to be used within
+ * {@link WorkflowEngine} to generate dynamic content for emails, reports, or logs.
+ * In case of an error, it logs the issue and returns a fallback value.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Service

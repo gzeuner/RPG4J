@@ -10,8 +10,14 @@ import java.util.Map;
 
 /**
  * Interface for all workflow steps.
- * Defines the core methods for executing a step and managing its name, used within a workflow
- * orchestrated by {@link de.zeus.hermes.service.WorkflowEngine}.
+ *
+ * <p>
+ * This interface defines the core methods required for executing a workflow step
+ * and managing its name. Implementations of this interface are orchestrated by
+ * {@link de.zeus.hermes.service.WorkflowEngine} to execute structured workflow operations.
+ * </p>
+ *
+ * @version 1.0.1
  */
 public interface WorkflowStep {
 

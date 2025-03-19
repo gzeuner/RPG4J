@@ -23,10 +23,14 @@ import java.util.stream.Collectors;
 
 /**
  * A {@link WorkflowStep} implementation that sends an email using {@link EmailService}.
+ *
  * <p>
- * This step resolves SMTP settings, recipients, and attachments from the context or configuration,
- * and sends an email with the specified subject and body.
+ * This step retrieves SMTP settings, recipient addresses, and attachments from the execution context
+ * or configuration properties. It then composes and sends an email with the specified subject and body,
+ * optionally including attachments. Designed for integration within automated workflows.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

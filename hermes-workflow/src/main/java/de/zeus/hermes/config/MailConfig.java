@@ -20,8 +20,14 @@ import java.util.Properties;
 
 /**
  * Configuration class for setting up the {@link JavaMailSender}.
- * Reads mail properties (host, port, username, password, etc.) from the environment,
- * decrypts them if encrypted, and configures the mail sender accordingly.
+ *
+ * <p>
+ * This class reads mail properties such as host, port, username, and password from the environment,
+ * decrypts them if necessary using {@link EncryptionUtil}, and configures the mail sender accordingly.
+ * It ensures that secure and dynamic email configurations are properly initialized.
+ * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Configuration

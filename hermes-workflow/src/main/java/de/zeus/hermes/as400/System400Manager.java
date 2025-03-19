@@ -4,19 +4,28 @@ import com.ibm.as400.access.AS400;
 import de.zeus.hermes.util.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
+
 /*
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
  * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**
- * Manager for handling AS400 system connections.
+ * Manages connections to AS400 systems.
  * <p>
- * This class creates and manages an AS400 connection. It decrypts the provided credentials if necessary and
- * provides methods to obtain and disconnect the AS400 connection.
+ * This class is responsible for:
+ * <ul>
+ *     <li>Creating and managing AS400 connections</li>
+ *     <li>Decrypting credentials when provided in encrypted form</li>
+ *     <li>Providing methods to connect and disconnect from the AS400 system</li>
+ * </ul>
  * </p>
+ *
+ * @author gzeuner
+ * @version 1.0.1
+ * @since 2024
  */
 @Slf4j
 @Component

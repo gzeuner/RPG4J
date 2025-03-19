@@ -20,10 +20,14 @@ import java.util.Objects;
 
 /**
  * A {@link WorkflowStep} implementation that fetches content from the database using a SQL query.
+ *
  * <p>
- * It retrieves data along with metadata via {@link SqlService} and stores the results in the provided context.
- * If the query is invalid or no data is returned, empty collections are stored.
+ * This step retrieves data and associated metadata via {@link SqlService} and stores the results
+ * in the provided workflow execution context. If the SQL query fails or returns no results,
+ * empty collections are stored to ensure the workflow continues without failure.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Data

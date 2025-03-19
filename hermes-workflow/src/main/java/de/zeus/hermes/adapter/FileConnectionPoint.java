@@ -6,11 +6,15 @@ import java.io.IOException;
  * Copyright 2024 gzeuner (https://tiny-tool.de)
  *
  * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
+ * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
  */
 
 /**
  * Interface for processing workflow files.
+ *
+ * @author gzeuner
+ * @version 1.0.1
+ * @since 2024
  */
 public interface FileConnectionPoint {
 

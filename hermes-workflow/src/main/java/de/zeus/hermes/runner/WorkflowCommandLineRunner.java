@@ -22,10 +22,14 @@ import java.io.InputStream;
 
 /**
  * A Spring Boot {@link CommandLineRunner} implementation that loads and executes a workflow upon application startup.
+ *
  * <p>
- * The workflow path can be specified via command-line arguments or a default configuration property.
- * This runner handles resource loading, workflow execution, and error logging.
+ * This runner loads a workflow from a specified path, either from command-line arguments or a default
+ * configuration property. It processes the workflow using {@link WorkflowEngine} and logs execution details.
+ * In case of errors, they are logged appropriately to ensure visibility.
  * </p>
+ *
+ * @version 1.0.1
  */
 @Slf4j
 @Component
