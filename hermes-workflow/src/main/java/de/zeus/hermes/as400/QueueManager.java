@@ -3,6 +3,7 @@ package de.zeus.hermes.as400;
 import com.ibm.as400.access.AS400;
 import com.ibm.as400.access.DataQueue;
 import com.ibm.as400.access.QSYSObjectPathName;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Component;
  * @since 2024
  */
 @Slf4j
+@Getter
 @Component
 public class QueueManager {
 
@@ -43,14 +45,16 @@ public class QueueManager {
      * @param as400     the AS400 connection.
      * @return the DataQueue for Java-to-RPG messages.
      */
-    public DataQueue getJavaToRpg(String library, String queueName, AS400 as400) {
+    public DataQueue getJavaToRpg(String library, String queueName, AS400 as400, int entryLength) {
         if (javaToRpg == null) {
             String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
             javaToRpg = new DataQueue(as400, path);
+            ensureExists(javaToRpg, library, queueName, entryLength);
             log.info("Java-to-RPG DataQueue initialized: {}", path);
         }
         return javaToRpg;
     }
+
 
     /**
      * Returns the RPG-to-Java DataQueue, initializing it if it hasn't been created yet.
@@ -60,12 +64,24 @@ public class QueueManager {
      * @param as400     the AS400 connection.
      * @return the DataQueue for RPG-to-Java messages.
      */
-    public DataQueue getRpgToJava(String library, String queueName, AS400 as400) {
+    public DataQueue getRpgToJava(String library, String queueName, AS400 as400, int entryLength) {
         if (rpgToJava == null) {
             String path = QSYSObjectPathName.toPath(library, queueName, "DTAQ");
             rpgToJava = new DataQueue(as400, path);
+            ensureExists(rpgToJava, library, queueName, entryLength);
             log.info("RPG-to-Java DataQueue initialized: {}", path);
         }
         return rpgToJava;
+    }
+
+    private void ensureExists(DataQueue queue, String library, String name, int entryLength) {
+        try {
+            if (!queue.exists()) {
+                log.info("Creating DataQueue '{}' in library '{}' with entryLength={}", name, library, entryLength);
+                queue.create(entryLength);
+            }
+        } catch (Exception e) {
+            log.error("Failed to create DataQueue '{}': {}", name, e.getMessage(), e);
+        }
     }
 }

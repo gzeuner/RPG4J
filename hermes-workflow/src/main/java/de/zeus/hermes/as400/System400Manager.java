@@ -1,31 +1,22 @@
 package de.zeus.hermes.as400;
 
 import com.ibm.as400.access.AS400;
-import de.zeus.hermes.util.EncryptionUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.util.text.BasicTextEncryptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/*
- * Copyright 2024 gzeuner (https://tiny-tool.de)
- *
- * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0
- */
-
 /**
- * Manages connections to AS400 systems.
+ * Manages connections to AS400 systems using Jasypt for credential decryption.
+ *
  * <p>
  * This class is responsible for:
  * <ul>
  *     <li>Creating and managing AS400 connections</li>
- *     <li>Decrypting credentials when provided in encrypted form</li>
+ *     <li>Decrypting credentials using Jasypt if marked as ENC(...)</li>
  *     <li>Providing methods to connect and disconnect from the AS400 system</li>
  * </ul>
  * </p>
- *
- * @author gzeuner
- * @version 1.0.1
- * @since 2024
  */
 @Slf4j
 @Component
@@ -33,30 +24,27 @@ public class System400Manager {
 
     private AS400 as400;
 
-    // Encryption key for decrypting credentials.
-    // This key should be managed securely in a real application.
-    private final String encryptionKey = "IhrVerschlüsselungsschlüssel";
+    @Value("${jasypt.encryptor.password}")
+    private String encryptionPassword;
 
     /**
      * Obtains an AS400 connection.
-     * <p>
      * If no connection exists, a new one is created using the provided system address and encrypted credentials.
-     * </p>
      *
      * @param system            the AS400 system address.
-     * @param encryptedUsername the encrypted username.
-     * @param encryptedPassword the encrypted password.
+     * @param encryptedUsername the encrypted username (possibly ENC(...))
+     * @param encryptedPassword the encrypted password (possibly ENC(...))
      * @return the AS400 connection instance.
      */
-    public AS400 getAs400(String system, String encryptedUsername, String encryptedPassword) {
+    public synchronized AS400 getAs400(String system, String encryptedUsername, String encryptedPassword) {
         if (as400 == null) {
             try {
-                String username = EncryptionUtil.decrypt(encryptionKey, encryptedUsername);
-                String password = EncryptionUtil.decrypt(encryptionKey, encryptedPassword);
+                String username = decryptIfNeeded(encryptedUsername);
+                String password = decryptIfNeeded(encryptedPassword);
                 as400 = new AS400(system, username, password);
-                log.info("AS400 connection successfully established.");
+                log.info("✅ AS400 connection successfully established.");
             } catch (Exception e) {
-                log.error("Error establishing AS400 connection.", e);
+                log.error("❌ Error establishing AS400 connection.", e);
             }
         }
         return as400;
@@ -71,5 +59,21 @@ public class System400Manager {
             as400 = null;
             log.info("AS400 connection closed.");
         }
+    }
+
+    /**
+     * Decrypts a value using Jasypt if it's in ENC(...) format.
+     *
+     * @param value the possibly encrypted string
+     * @return decrypted or plain string
+     */
+    private String decryptIfNeeded(String value) {
+        if (value != null && value.startsWith("ENC(") && value.endsWith(")")) {
+            String encryptedPart = value.substring(4, value.length() - 1);
+            BasicTextEncryptor decryptor = new BasicTextEncryptor();
+            decryptor.setPassword(encryptionPassword);
+            return decryptor.decrypt(encryptedPart);
+        }
+        return value;
     }
 }

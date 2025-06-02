@@ -1,28 +1,13 @@
 package de.zeus.hermes.config;
 
-import de.zeus.hermes.util.EncryptionUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
-/*
- * Copyright 2024 gzeuner (https://tiny-tool.de)
- *
- * Licensed under the Apache License, Version 2.0
- * See LICENSE file or visit: http://www.apache.org/licenses/LICENSE-2.0.
- */
-
 /**
- * Utility class for resolving dynamic properties, including encrypted values.
- *
- * <p>
- * This component retrieves configuration values from the environment, decrypts them if necessary,
- * and applies fallback values from application.yml when needed. It ensures that sensitive properties
- * (such as credentials) are handled securely and masked in logs.
- * </p>
- *
- * @version 1.0.1
+ * Resolves configuration properties with fallback and masking,
+ * relying on Jasypt for automatic decryption of ENC(...) values.
  */
 @Slf4j
 @Component
@@ -33,40 +18,26 @@ public class DynamicPropertyResolver {
 
     /**
      * Resolves a property by checking a given value, falling back to application.yml if necessary.
-     * If the resolved value is encrypted (ENC(...)), it is decrypted before returning.
+     * Jasypt handles decryption automatically if the value is in ENC(...) format.
      *
      * @param value           the preferred value (may be null)
-     * @param defaultProperty the key for the default value in application.yml
-     * @return the decrypted or default value, or null if neither is available.
+     * @param defaultProperty the key for the fallback property in application.yml
+     * @return the resolved (and possibly decrypted) value, or null if not available
      */
     public String resolve(final String value, final String defaultProperty) {
         if (value != null) {
             log.info("Value for '{}' already set: '{}'", defaultProperty, maskSensitiveValue(value));
-            return decryptIfNeeded(value);
+            return value;
         }
 
         final String defaultValue = env.getProperty(defaultProperty);
         if (defaultValue != null) {
             log.info("Using fallback from application.yml for '{}': '{}'", defaultProperty, maskSensitiveValue(defaultValue));
-            return decryptIfNeeded(defaultValue);
+            return defaultValue;
         }
 
-        log.warn("No default value found for '{}'. Returning NULL.", defaultProperty);
+        log.warn("No value found for '{}'. Returning NULL.", defaultProperty);
         return null;
-    }
-
-    /**
-     * Decrypts the given value if it is in the format ENC(...).
-     *
-     * @param value the value to potentially decrypt.
-     * @return the decrypted value if applicable; otherwise, the original value.
-     */
-    private String decryptIfNeeded(final String value) {
-        if (EncryptionUtil.isEncrypted(value)) {
-            final String encryptionKey = env.getProperty("encryption.key", "defaultSecretKey1234");
-            return EncryptionUtil.decrypt(encryptionKey, EncryptionUtil.extractEncrypted(value));
-        }
-        return value;
     }
 
     /**

@@ -1,12 +1,21 @@
 server:
   port: 9090
 
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:your#pwd#key}
+    algorithm: PBEWithMD5AndDES
+
 spring:
   datasource:
     driver-class-name: com.ibm.as400.access.AS400JDBCDriver
-    url: jdbc:as400://${AS400_SYSTEM:system}/bib;translate binary=true
-    username: ${DB_USERNAME:user}
-    password: ${DB_PASSWORD:pass}
+    url: jdbc:as400://${AS400_SYSTEM:system};libraries=YOURLIB;translate binary=true
+    username: ENC(yourEncryptedUser)
+    password: ENC(yourEncryptedPass)
+  jpa:
+    hibernate:
+      ddl-auto: none
+
 
   freemarker:
     template-loader-path: classpath:/templates/
@@ -31,14 +40,15 @@ export:
 
 as400:
   system: ${AS400_SYSTEM:YOUR_SYSTEM}
-  username: ${AS400_USERNAME:YOUR_USER}
-  password: ${AS400_PASSWORD:YOUR_PWD}
+  username: ENC(yourEncryptedUser)
+  password: ENC(yourEncryptedPass)
 
 dataqueue:
-  library: ${QUEUE_LIBRARY:YOUR_LIB}
+  library: ${QUEUE_LIBRARY:YOURLIB}
   rpg2java: RP2JQ
   java2rpg: J2RPQ
-  max-entry-length: 512
+  key-length: 32
+  max-entry-length: 1024
   description: "Java-RPG Integration Queue"
 
 mail:
@@ -52,7 +62,7 @@ mail:
     mail.smtp.starttls.enable: true
 
 encryption:
-  key: ${ENCRYPTION_KEY:mySuperSecretKey0815}
+  key: ${ENCRYPTION_KEY:yourSuperSecretSuperKey##}
 
 fallback:
   recipients: "my.mail@localhost.local"
