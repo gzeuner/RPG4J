@@ -58,6 +58,12 @@
             <artifactId>jt400</artifactId>
             <version>21.0.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.6</version>
+        </dependency>
         <!-- YAML Parsing mit SnakeYAML -->
         <dependency>
             <groupId>org.yaml</groupId>

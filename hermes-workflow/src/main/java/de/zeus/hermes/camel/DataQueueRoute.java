@@ -13,7 +13,7 @@ import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
 @Slf4j
-@Component
+//@Component
 @RequiredArgsConstructor
 public class DataQueueRoute extends RouteBuilder {
 
@@ -30,7 +30,7 @@ public class DataQueueRoute extends RouteBuilder {
     public void configure() {
         log.info("\uD83D\uDD0C Configuring DataQueue Camel Route for RPG → Java via DB2");
 
-        // Konfiguration aus application.yaml via DynamicPropertyResolver
+        // Konfiguration aus application.properties via DynamicPropertyResolver
         String system = resolve("as400.system");
         String username = resolve("as400.username");
         String password = resolve("as400.password");

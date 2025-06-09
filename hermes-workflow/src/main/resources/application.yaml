@@ -3,7 +3,7 @@ server:
 
 jasypt:
   encryptor:
-    password: ${JASYPT_ENCRYPTOR_PASSWORD:your#pwd#key}
+    password: ${JASYPT_ENCRYPTOR_PASSWORD:your_key}
     algorithm: PBEWithMD5AndDES
 
 spring:
@@ -15,10 +15,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-
-
   freemarker:
-    template-loader-path: classpath:/templates/
+    template-loader-path: "classpath:/templates/"
     suffix: .ftl
     charset: UTF-8
     check-template-location: true
@@ -29,8 +27,8 @@ workflow:
   executeSql:
     defaultQuery: "SELECT 'Fallback' AS Wert FROM SYSIBM.SYSDUMMY1"
   applyTemplate:
-    subjectTemplate: classpath:/templates/emailSubject.ftl
-    bodyTemplate: classpath:/templates/emailBody.ftl
+    subjectTemplate: "classpath:/templates/emailSubject.ftl"
+    bodyTemplate: "classpath:/templates/emailBody.ftl"
   transform:
     type: csv
 
@@ -52,17 +50,18 @@ dataqueue:
   description: "Java-RPG Integration Queue"
 
 mail:
-  host: ${MAIL_HOST:smtp.example.com}
-  port: ${MAIL_PORT:587}
+  host: ${MAIL_HOST:localhost}
+  port: ${MAIL_PORT:1025}
   username: ${MAIL_USERNAME:user}
   password: ${MAIL_PASSWORD:pass}
   from: noreply@example.com
+  default-recipient: support@example.com
   properties:
-    mail.smtp.auth: true
-    mail.smtp.starttls.enable: true
+    "mail.smtp.auth": false
+    "mail.smtp.starttls.enable": false
 
 encryption:
-  key: ${ENCRYPTION_KEY:yourSuperSecretSuperKey##}
+  key: ${ENCRYPTION_KEY:your_key}
 
 fallback:
   recipients: "my.mail@localhost.local"

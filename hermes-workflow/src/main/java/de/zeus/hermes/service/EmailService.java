@@ -38,22 +38,24 @@ public class EmailService {
     private final JavaMailSender mailSender; // Injected mailSender (not used in dynamic configuration)
 
     /**
-     * Sends an email using the specified SMTP server.
+     * Sends an email using the specified SMTP server and port.
      *
      * @param smtpServer  the SMTP server to use for sending.
+     * @param smtpPort    the port to use on the SMTP server.
      * @param recipients  the list of email recipients.
      * @param subject     the subject of the email.
      * @param body        the email body (plain text or HTML).
      * @param attachments list of files to attach (optional).
      */
     public void sendEmail(final String smtpServer,
+                          final int smtpPort,
                           final List<String> recipients,
                           final String subject,
                           final String body,
                           final List<File> attachments) {
         try {
-            // Configure a dynamic mail sender based on the provided SMTP server.
-            final JavaMailSenderImpl dynamicMailSender = configureMailSender(smtpServer);
+            // Configure a dynamic mail sender based on the provided SMTP server and port.
+            final JavaMailSenderImpl dynamicMailSender = configureMailSender(smtpServer, smtpPort);
             // Create a MIME message.
             final MimeMessage message = dynamicMailSender.createMimeMessage();
             // Use MimeMessageHelper for easier message creation with multipart support.
@@ -80,16 +82,16 @@ public class EmailService {
     }
 
     /**
-     * Configures a new {@link JavaMailSenderImpl} instance dynamically with the provided SMTP server.
+     * Configures a new {@link JavaMailSenderImpl} instance dynamically with the provided SMTP server and port.
      *
      * @param smtpServer the SMTP server hostname.
+     * @param smtpPort   the SMTP server port.
      * @return a configured {@link JavaMailSenderImpl} instance.
      */
-    private JavaMailSenderImpl configureMailSender(final String smtpServer) {
+    private JavaMailSenderImpl configureMailSender(final String smtpServer, final int smtpPort) {
         final JavaMailSenderImpl dynamicMailSender = new JavaMailSenderImpl();
         dynamicMailSender.setHost(smtpServer);
-        // Set default SMTP port; adjust if needed.
-        dynamicMailSender.setPort(25);
+        dynamicMailSender.setPort(smtpPort);
         // Set empty credentials assuming no authentication is required.
         dynamicMailSender.setUsername("");
         dynamicMailSender.setPassword("");

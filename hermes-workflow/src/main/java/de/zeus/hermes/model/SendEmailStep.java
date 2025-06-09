@@ -88,6 +88,8 @@ public class SendEmailStep implements WorkflowStep {
 
         // Resolve SMTP server configuration
         final String smtpServer = resolveSmtpServer(context);
+        final int smtpPort = resolveSmtpPort(context);
+
         if (smtpServer == null) {
             log.error("No valid SMTP server configured for step '{}'. Email sending aborted.", getName());
             context.put("email_error", "SMTP server missing");
@@ -114,13 +116,9 @@ public class SendEmailStep implements WorkflowStep {
 
         // Resolve attachments from transformedContent in the context
         final List<File> attachments = Optional.ofNullable((String) context.get("transformedContent"))
-                .map(fileName -> {
-                    // Construct full path using resolved export directory
-                    final String fullPath = Paths.get(resolvedExportPath, fileName).toString();
-                    return new File(fullPath);
-                })
+                .map(fileName -> Paths.get(resolvedExportPath, fileName).toFile())
                 .filter(file -> {
-                    final boolean exists = file.exists();
+                    boolean exists = file.exists();
                     if (!exists) {
                         log.warn("Attachment file not found for step '{}': {}", getName(), file.getAbsolutePath());
                     }
@@ -128,17 +126,14 @@ public class SendEmailStep implements WorkflowStep {
                 })
                 .map(List::of)
                 .orElseGet(() -> {
-                    log.debug("No valid attachment found in 'transformedContent' for step '{}': {}",
-                            getName(), context.get("transformedContent"));
+                    log.debug("No valid attachment found in 'transformedContent' for step '{}': {}", getName(), context.get("transformedContent"));
                     return List.of();
                 });
 
-        log.info("Sending email via SMTP '{}' to recipients: {} with {} attachment(s): {}",
-                smtpServer, recipients, attachments.size(), attachments);
+        log.info("Sending email via SMTP '{}:{}' to recipients: {} with {} attachment(s): {}", smtpServer, smtpPort, recipients, attachments.size(), attachments);
 
         try {
-            // Send the email using the EmailService
-            emailService.sendEmail(smtpServer, recipients, subject, body, attachments);
+            emailService.sendEmail(smtpServer, smtpPort, recipients, subject, body, attachments);
             log.info("Email successfully sent to: {} for step '{}'", recipients, getName());
         } catch (Exception e) {
             log.error("Error sending email for step '{}': {}", getName(), e.getMessage(), e);
@@ -173,25 +168,64 @@ public class SendEmailStep implements WorkflowStep {
         if (smtp != null && !smtp.trim().isEmpty()) {
             if (smtp.startsWith("context:")) {
                 final String contextKey = smtp.substring("context:".length());
-                return Optional.ofNullable(context.get(contextKey))
+                String directContextValue = Optional.ofNullable(context.get(contextKey))
                         .map(Object::toString)
                         .map(String::trim)
                         .filter(s -> !s.isEmpty())
-                        .orElseGet(() -> Optional.ofNullable((List<Map<String, Object>>) context.get("sqlResult_" + contextKey))
-                                .filter(list -> !list.isEmpty())
-                                .map(list -> list.get(0).get("KEWALP"))
-                                .map(Object::toString)
-                                .map(String::trim)
-                                .filter(s -> !s.isEmpty())
-                                .orElseGet(this::getFallbackSmtpServer));
+                        .orElse(null);
+
+                if (directContextValue != null) {
+                    return directContextValue;
+                }
+
+                List<Map<String, Object>> sqlResult = (List<Map<String, Object>>) context.get("sqlResult_" + contextKey);
+                if (sqlResult != null && !sqlResult.isEmpty()) {
+                    Object val = sqlResult.get(0).get("KEWALP");
+                    if (val != null && !val.toString().isBlank()) {
+                        return val.toString().trim();
+                    }
+                }
+
+                if (smtp.contains("${")) {
+                    String resolved = environment.resolvePlaceholders(smtp);
+                    if (resolved != null && !resolved.equals(smtp)) {
+                        return resolved.trim();
+                    }
+                }
+                return getFallbackSmtpServer();
             }
-            return Optional.ofNullable(environment)
-                    .map(env -> env.resolvePlaceholders(smtp))
-                    .map(String::trim)
-                    .filter(s -> !s.isEmpty() && !s.equals(smtp))
-                    .orElse(smtp);
+
+            String resolved = environment.resolvePlaceholders(smtp);
+            if (resolved != null && !resolved.equals(smtp)) {
+                return resolved.trim();
+            }
+            return smtp.trim();
         }
         return getFallbackSmtpServer();
+    }
+
+    private int resolveSmtpPort(final Map<String, Object> context) {
+        Object portObj = context.get("email.smtpPort");
+        if (portObj instanceof Number) {
+            return ((Number) portObj).intValue();
+        }
+        if (portObj instanceof String) {
+            try {
+                return Integer.parseInt(((String) portObj).trim());
+            } catch (NumberFormatException ignored) {
+                log.warn("Invalid SMTP port in context: '{}'", portObj);
+            }
+        }
+        String configPort = environment.getProperty("mail.port");
+        if (configPort != null && !configPort.isBlank()) {
+            try {
+                return Integer.parseInt(configPort.trim());
+            } catch (NumberFormatException ignored) {
+                log.warn("Invalid configured SMTP port: '{}'", configPort);
+            }
+        }
+        log.warn("No valid SMTP port found. Falling back to default port 25.");
+        return 25;
     }
 
     /**
@@ -202,7 +236,7 @@ public class SendEmailStep implements WorkflowStep {
      */
     @SuppressWarnings("unchecked")
     private List<String> resolveRecipients(final Map<String, Object> context) {
-        return Optional.ofNullable((List<String>) context.get("email.recipients"))
+        List<String> recipients = Optional.ofNullable((List<String>) context.get("email.recipients"))
                 .filter(list -> !list.isEmpty())
                 .orElseGet(() -> Optional.ofNullable((List<Map<String, Object>>) context.get("sqlResult_fetchRecipients"))
                         .filter(list -> !list.isEmpty())
@@ -213,6 +247,18 @@ public class SendEmailStep implements WorkflowStep {
                                 .collect(Collectors.toList()))
                         .filter(list -> !list.isEmpty())
                         .orElse(null));
+
+        if (recipients == null || recipients.isEmpty()) {
+            String fallbackRecipient = environment.getProperty("mail.default-recipient");
+            if (fallbackRecipient != null && !fallbackRecipient.isBlank()) {
+                log.warn("No recipients found in context. Using fallback recipient from config: {}", fallbackRecipient);
+                return List.of(fallbackRecipient.trim());
+            } else {
+                log.error("No recipients available and no fallback recipient configured in 'mail.default-recipient'.");
+                return null;
+            }
+        }
+        return recipients;
     }
 
     /**
@@ -225,8 +271,7 @@ public class SendEmailStep implements WorkflowStep {
                 .map(env -> env.getProperty(FALLBACK_PROPERTY))
                 .filter(s -> !s.trim().isEmpty())
                 .orElseGet(() -> {
-                    log.warn("No fallback SMTP server found in application.yaml for '{}' in step '{}'",
-                            FALLBACK_PROPERTY, getName());
+                    log.warn("No fallback SMTP server found in application.properties for '{}' in step '{}'", FALLBACK_PROPERTY, getName());
                     return null;
                 });
     }
