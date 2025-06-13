@@ -1,0 +1,25 @@
+steps:
+  - step: executeSql
+    name: fetchMailserver
+    query: "SELECT DUMMY_VALUE FROM DUMMY_TABLE WHERE DUMMY_COLUMN = 'MAILSERVER' AND DUMMY_ID = 1"
+
+  - step: executeSql
+    name: fetchRecipients
+    query: "SELECT email FROM DUMMY_RECIPIENTS WHERE process = 'Test_Process' AND property1 = 'Test_Email' AND property2 = 'Test_Category'"
+
+  - step: executeSql
+    name: fetchContent
+    query: "SELECT COLUMN_1 AS FIELD_1, COLUMN_2 AS FIELD_2, COLUMN_3 AS FIELD_3, COLUMN_4 AS FIELD_4, COLUMN_5 AS FIELD_5, COLUMN_6 AS FIELD_6, COLUMN_7 AS FIELD_7 FROM DUMMY_DATA"
+
+  - step: transform
+    name: transformData
+    type: csv
+
+  - step: applyTemplate
+    name: applyEmailTemplates
+    subjectTemplate: "emailSubject.ftl"
+    bodyTemplate: "emailBody.ftl"
+
+  - step: sendEmail
+    name: sendNotification
+    smtp: "context:fetchMailserver"

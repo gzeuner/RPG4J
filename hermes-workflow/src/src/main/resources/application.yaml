@@ -3,7 +3,7 @@ server:
 
 jasypt:
   encryptor:
-    password: ${JASYPT_ENCRYPTOR_PASSWORD:yourEncPassWord}
+    password: innO87#a@98687
     algorithm: PBEWithMD5AndDES
     key-obtention-iterations: 1000
     pool-size: 1
@@ -14,9 +14,9 @@ jasypt:
 spring:
   datasource:
     driver-class-name: com.ibm.as400.access.AS400JDBCDriver
-    url: jdbc:as400://ipOrName;libraries=lib(s);translate binary=true
-    username: yourUserInPlainText OR ENC(yourUserEncrypted)
-    password: yourPassInPlainText OR ENC(yourPassEncrypted)
+    url: jdbc:as400://DERSMT1;libraries=DATEIEN;translate binary=true
+    username: ENC(+mfzkIq6W5Sh0TIMA5n7Rg==)
+    password: ENC(/I7dhCrn2X9e7DsOhmVV4A==)
 
   jpa:
     hibernate:
@@ -47,8 +47,8 @@ export:
 
 as400:
   system: ${AS400_SYSTEM:YOUR_SYSTEM}
-  username: yourUserName
-  password: yourPassword
+  username: ENC(yourEncryptedUser)
+  password: ENC(yourEncryptedPass)
 
 dataqueue:
   library: ${QUEUE_LIBRARY:YOURLIB}
@@ -59,15 +59,18 @@ dataqueue:
   description: "Java-RPG Integration Queue"
 
 mail:
-  host: ${MAIL_HOST:localhost}
-  port: ${MAIL_PORT:1025}
+  host: ${MAIL_HOST:10.100.0.76}
+  port: ${MAIL_PORT:25}
   username: ${MAIL_USERNAME:user}
   password: ${MAIL_PASSWORD:pass}
   from: noreply@example.com
-  default-recipient: "you@localhost.local"
+  default-recipient: "guido.zeuner@rossmann.de"
   properties:
     "mail.smtp.auth": false
     "mail.smtp.starttls.enable": false
 
+encryption:
+  key: ${ENCRYPTION_KEY:your_key}
+
 fallback:
-  recipients: "you@localhost.local"
+  recipients: "guido.zeuner@rossmann.de"
