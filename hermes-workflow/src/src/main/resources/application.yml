@@ -1,0 +1,76 @@
+server:
+  port: 9090
+
+jasypt:
+  encryptor:
+    password: yourPass
+    algorithm: PBEWithMD5AndDES
+    key-obtention-iterations: 1000
+    pool-size: 1
+    provider-name: SunJCE
+    salt-generator-classname: org.jasypt.salt.RandomSaltGenerator
+    string-output-type: base64
+
+spring:
+  datasource:
+    driver-class-name: com.ibm.as400.access.AS400JDBCDriver
+    url: jdbc:as400://yourIpOrSystemName;libraries=yourLib;translate binary=true
+    username: yourUserInPlainText or ENC(yourUserEncrypted)
+    password: yourPassInPlainText or ENC(yourPassEncrypted)
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.DB2Dialect
+  freemarker:
+    template-loader-path: "classpath:/templates/"
+    suffix: .ftl
+    charset: UTF-8
+    check-template-location: true
+
+workflow:
+  hot-folder: ${HOT_FOLDER:${user.dir}/hotfolder}
+  processed-folder: ${PROCESSED_FOLDER:${user.dir}/processed}
+  executeSql:
+    defaultQuery: "SELECT 'Fallback' AS Wert FROM SYSIBM.SYSDUMMY1"
+  applyTemplate:
+    subjectTemplate: "classpath:/templates/emailSubject.ftl"
+    bodyTemplate: "classpath:/templates/emailBody.ftl"
+  transform:
+    type: csv
+
+export:
+  file-path: ${EXPORT_DIR:./export}
+  formats: html, json, jsonl, csv, md
+
+as400:
+  system: ${AS400_SYSTEM:YOUR_SYSTEM}
+  username: ENC(yourEncryptedUser)
+  password: ENC(yourEncryptedPass)
+
+dataqueue:
+  library: ${QUEUE_LIBRARY:YOURLIB}
+  rpg2java: RP2JQ
+  java2rpg: J2RPQ
+  key-length: 32
+  max-entry-length: 1024
+  description: "Java-RPG Integration Queue"
+
+mail:
+  host: ${MAIL_HOST:10.100.0.76}
+  port: ${MAIL_PORT:25}
+  username: ${MAIL_USERNAME:user}
+  password: ${MAIL_PASSWORD:pass}
+  from: noreply@example.com
+  default-recipient: "you@localhost.local"
+  properties:
+    "mail.smtp.auth": false
+    "mail.smtp.starttls.enable": false
+
+encryption:
+  key: ${ENCRYPTION_KEY:your_key}
+
+fallback:
+  recipients: "you@localhost.local"
